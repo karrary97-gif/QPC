@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>نظام التقديم على الدراسة المسائية - كلية البوليتكنك/القرنة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --primary:#0b5940;
+  --primary-2:#0e7350;
+  --primary-dark:#073d2c;
+  --primary-tint:#e9f4ef;
+  --accent:#b8862c;
+  --accent-dark:#8f6a1f;
+  --accent-tint:#faf3e2;
+  --bg:#f5f3ec;
+  --surface:#ffffff;
+  --line:#e6e2d5;
+  --text:#1c231f;
+  --muted:#6d7770;
+  --danger:#b3261e;
+  --danger-tint:#fbeae8;
+  --ok:#1c7a44;
+  --ok-tint:#e8f5ec;
+  --warn:#9a6b12;
+  --warn-tint:#fbf1de;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(20,30,25,.05),0 10px 26px -14px rgba(20,30,25,.16);
+  --shadow-lg:0 22px 55px -22px rgba(11,89,64,.4);
+  --font:'Cairo',Tahoma,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  padding-bottom:48px;
+  -webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
+
+/* ===== الترويسة ===== */
+header.topbar{
+  position:relative;overflow:hidden;
+  background:linear-gradient(120deg,var(--primary-dark),var(--primary) 55%,var(--primary-2));
+  color:#fff;padding:18px 22px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  position:sticky;top:0;z-index:50;
+  box-shadow:0 4px 18px rgba(4,30,20,.25);
+}
+header.topbar::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.10;
+  background-image:radial-gradient(circle at 92% -10%, #fff 0, transparent 42%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.5) 0 1px, transparent 1px 26px);
+}
+header.topbar .emblem{
+  width:46px;height:46px;border-radius:50%;flex:0 0 auto;
+  background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.5);
+  display:flex;align-items:center;justify-content:center;
+}
+header.topbar .brand{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+header.topbar .titles{line-height:1.5}
+header.topbar .titles h1{font-size:15.5px;margin:0;font-weight:800;letter-spacing:.2px}
+header.topbar .titles p{font-size:12px;margin:2px 0 0;opacity:.88;font-weight:500}
+header.topbar .clock{
+  font-size:12.5px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+  padding:7px 14px;border-radius:20px;white-space:nowrap;position:relative;z-index:1;font-weight:600;
+}
+.offline-banner{
+  background:var(--warn-tint);color:var(--warn);text-align:center;padding:9px;font-size:13px;
+  font-weight:700;display:none;border-bottom:1px solid #f0dfb0;
+}
+
+.container{max-width:920px;margin:0 auto;padding:20px 16px}
+.screen{display:none;animation:fade .3s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px;box-shadow:var(--shadow);margin-bottom:16px;
+}
+.card h2{margin-top:0;font-size:18px;color:var(--primary-dark);font-weight:800}
+.eyebrow{font-size:11.5px;font-weight:800;color:var(--accent-dark);letter-spacing:.4px;margin:0 0 6px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12.5px;margin-bottom:6px;color:var(--muted);font-weight:700}
+.field input,.field select,.field textarea{
+  width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  font-family:var(--font);font-size:14px;background:#fbfbf8;color:var(--text);transition:.15s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--primary-2);background:#fff;box-shadow:0 0 0 4px var(--primary-tint);
+}
+.field .hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+.pwd-wrap{display:flex;gap:8px}
+.pwd-wrap input{flex:1}
+.pwd-eye{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;border-radius:var(--radius-sm);padding:0 14px;font-size:12.5px;font-weight:700;color:var(--primary-dark);cursor:pointer;font-family:var(--font)}
+.pwd-eye:hover{background:var(--primary-tint)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--primary);color:#fff;border:none;
+  padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;
+  font-family:var(--font);transition:.15s;box-shadow:0 6px 16px -8px rgba(11,89,64,.55);
+}
+.btn:hover{background:var(--primary-2);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.secondary{background:var(--primary-tint);color:var(--primary-dark);box-shadow:none;border:1.5px solid var(--line)}
+.btn.secondary:hover{background:#e1eee7}
+.btn.danger{background:var(--danger);box-shadow:0 6px 16px -8px rgba(179,38,30,.5)}
+.btn.accent{background:var(--accent);color:#3a2c00;box-shadow:0 6px 16px -8px rgba(184,134,44,.5)}
+.btn.accent:hover{background:var(--accent-dark);color:#fff}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn.dl{padding:15px 30px;font-size:16px;border-radius:14px;box-shadow:0 10px 24px -10px rgba(184,134,44,.6)}
+.btn.dl svg{width:21px;height:21px;flex:0 0 auto}
+.btn.dl:hover{transform:translateY(-2px)}
+@media(max-width:640px){.btn.dl{padding:14px 20px;font-size:15px;width:100%}}
+
+/* ===== الرئيسية ===== */
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+@media(max-width:640px){.home-grid{grid-template-columns:1fr}}
+.home-card{
+  position:relative;background:var(--surface);border-radius:20px;padding:26px 22px;text-align:right;
+  box-shadow:var(--shadow);cursor:pointer;transition:.2s;border:1.5px solid var(--line);
+  border-top:4px solid var(--primary);overflow:hidden;
+}
+.home-card:nth-child(2){border-top-color:var(--accent)}
+.home-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px);border-color:var(--primary-2)}
+.home-card .icon{
+  width:52px;height:52px;border-radius:14px;background:var(--primary-tint);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+}
+.home-card:nth-child(2) .icon{background:var(--accent-tint);color:var(--accent-dark)}
+.home-card h2{font-size:17px;margin:0 0 6px}
+.home-card .go{
+  position:absolute;left:20px;bottom:22px;font-size:20px;color:var(--muted);transition:.2s;
+}
+.home-card:hover .go{color:var(--primary);transform:translateX(-4px)}
+.home-links{margin-top:18px;text-align:center;color:var(--muted);font-size:13px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ===== لوحة تعليمات النظام (شرائح) ===== */
+.intro-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.intro-topbar .skip{background:none;border:none;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline}
+.intro-dots{display:flex;gap:7px;justify-content:center;margin:4px 0 16px}
+.intro-dots .dot{width:9px;height:9px;border-radius:50%;background:var(--line);cursor:pointer;transition:.15s;border:none;padding:0}
+.intro-dots .dot.active{background:var(--primary);width:22px;border-radius:6px}
+.slide{display:none;animation:fade .25s ease}
+.slide.active{display:block}
+.slide .badge-idx{display:inline-block;background:var(--primary-tint);color:var(--primary-dark);font-size:11.5px;font-weight:800;padding:4px 12px;border-radius:20px;margin-bottom:10px}
+.slide h2{font-size:19px;color:var(--primary-dark);margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.slide h2 .emoji{font-size:22px}
+.slide p{line-height:1.9;font-size:14.5px;margin:0 0 10px}
+.slide .info-box{background:var(--primary-tint);border:1px solid #cfe4da;border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px}
+.dept-card{border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:12px;background:#fbfbf8}
+.dept-card h3{margin:0 0 10px;font-size:15px;color:var(--primary-dark)}
+.dept-card .row{display:flex;gap:8px;margin-bottom:6px;font-size:13.5px}
+.dept-card .row b{flex:0 0 auto;color:var(--muted);min-width:150px}
+.avg-pill{display:inline-flex;align-items:center;gap:6px;background:var(--accent-tint);color:var(--accent-dark);font-weight:800;font-size:13px;padding:5px 12px;border-radius:20px;margin-bottom:12px}
+
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.tab-btn{
+  padding:9px 16px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+  cursor:pointer;font-size:13px;font-weight:700;color:var(--muted);font-family:var(--font);transition:.15s;
+}
+.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.link-btn{background:none;border:none;color:var(--primary);text-decoration:none;font-weight:700;cursor:pointer;font-size:13.5px;padding:0;display:inline-flex;align-items:center;gap:4px}
+.link-btn:hover{color:var(--primary-2);text-decoration:underline}
+
+/* ===== شريط تقدم الاستمارة (عنصر مميز) ===== */
+.stepper{display:flex;align-items:center;margin-bottom:20px;gap:0}
+.stepper .step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.stepper .dot{
+  width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid var(--line);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;transition:.2s;z-index:1;
+}
+.stepper .step.done .dot{background:var(--primary);border-color:var(--primary);color:#fff}
+.stepper .step.active .dot{background:#fff;border-color:var(--primary);color:var(--primary);box-shadow:0 0 0 4px var(--primary-tint)}
+.stepper .label{font-size:11px;color:var(--muted);margin-top:6px;font-weight:700;text-align:center}
+.stepper .step.active .label{color:var(--primary-dark)}
+.stepper .line{position:absolute;top:17px;right:50%;width:100%;height:2px;background:var(--line);z-index:0}
+.stepper .step:first-child .line{display:none}
+.stepper .step.done .line,.stepper .step.active .line{background:var(--primary)}
+
+.msg{padding:11px 15px;border-radius:12px;font-size:13.5px;margin-bottom:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.msg.ok{background:var(--ok-tint);color:var(--ok)}
+.msg.err{background:var(--danger-tint);color:var(--danger)}
+.msg.info{background:var(--primary-tint);color:var(--primary-dark)}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:800}
+.badge.ok{background:var(--ok-tint);color:var(--ok)}
+.badge.warn{background:var(--warn-tint);color:var(--warn)}
+.badge.err{background:var(--danger-tint);color:var(--danger)}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+table th,table td{border:1px solid var(--line);padding:9px;text-align:center}
+table th{background:var(--primary-tint);color:var(--primary-dark);font-weight:800}
+
+.upload-progress{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:12.5px;font-weight:700;color:var(--primary-dark)}
+.bar-outer{flex:1;height:8px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar-outer i{display:block;height:100%;width:0%;background:var(--primary);transition:width .25s}
+.file-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.file-grid{grid-template-columns:1fr}}
+.file-item{border:1.5px dashed #cdd5cd;border-radius:12px;padding:12px;font-size:12.5px;transition:.15s}
+.file-item b{display:block;margin-bottom:8px;font-size:12.5px}
+.file-item input[type=file]{width:100%;font-size:12px}
+.file-item.done{border-style:solid;border-color:var(--ok);background:var(--ok-tint)}
+.file-item .bar{height:5px;border-radius:4px;background:var(--line);margin-top:8px;overflow:hidden;display:none}
+.file-item .bar i{display:block;height:100%;width:0%;background:var(--primary);transition:width .2s}
+
+.small{font-size:12px;color:var(--muted)}
+.center{text-align:center}
+.req-card{border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;transition:.15s}
+.req-card:hover{border-color:var(--primary-2)}
+.req-card .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;align-items:center}
+.req-card .meta{font-size:12.5px;color:var(--muted);line-height:1.9}
+
+footer.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:34px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.trustline{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;color:var(--primary-dark)}
+
+.spinner{display:inline-block;width:15px;height:15px;border:2.5px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;opacity:.85}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stat-num{font-size:28px;font-weight:800;color:var(--primary-dark)}
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap}
+.color-swatches input[type=color]{width:46px;height:38px;border:none;border-radius:8px;cursor:pointer}
+
+.skel{background:linear-gradient(90deg,#eee 25%,#f5f5f5 37%,#eee 63%);background-size:400% 100%;animation:sk 1.4s ease infinite;border-radius:10px;height:64px;margin-bottom:10px}
+@keyframes sk{0%{background-position:100% 50%}100%{background-position:0 50%}}
+
+.receipt{border:1.5px dashed var(--primary);border-radius:16px;padding:22px;background:var(--primary-tint);position:relative}
+.receipt .code{font-family:monospace;font-size:22px;font-weight:800;letter-spacing:2px;color:var(--primary-dark);background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 16px;display:inline-block;margin:8px 0}
+.receipt .check{
+  width:52px;height:52px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;
+  justify-content:center;margin:0 auto 12px;box-shadow:0 8px 20px -8px rgba(28,122,68,.6);
+}
+
+/* ===== تنبيهات منبثقة ===== */
+#toastHost{position:fixed;bottom:18px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:200;pointer-events:none}
+.toast{
+  pointer-events:auto;background:#20261f;color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;
+  font-weight:700;box-shadow:0 10px 30px -10px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;
+  animation:toastin .2s ease;max-width:92vw;
+}
+.toast.ok{background:var(--ok)}
+.toast.err{background:var(--danger)}
+.toast.info{background:var(--primary-dark)}
+@keyframes toastin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+svg.ic{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== تجاوب كامل مع الجوال ===== */
+@media(max-width:600px){
+  .container{padding:12px 10px}
+  header.topbar{padding:12px 14px}
+  header.topbar .titles h1{font-size:13px}
+  header.topbar .titles p{font-size:10.5px}
+  header.topbar .clock{font-size:11px;padding:5px 10px}
+  .card{padding:15px;border-radius:14px}
+  .home-card{padding:20px 16px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  .tabs::-webkit-scrollbar{height:4px}
+  .tab-btn{flex:0 0 auto;white-space:nowrap;font-size:12px;padding:8px 13px}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+  .btn-row{flex-direction:column;align-items:stretch}
+  .btn-row .btn,.btn-row .btn.secondary,.btn-row .btn.danger,.btn-row .btn.accent{width:100%}
+  .btn-row select,.btn-row input{width:100%;margin-bottom:6px}
+  .req-card .btn-row{flex-direction:column}
+  .req-card .top{flex-direction:column;align-items:flex-start;gap:6px}
+  .stepper .label{font-size:9.5px}
+  .stepper .dot{width:28px;height:28px;font-size:12px}
+  .grid2{gap:10px}
+  .file-item{padding:10px}
+  .receipt .code{font-size:17px;letter-spacing:1px;padding:8px 12px}
+  .home-links{flex-direction:column;gap:8px}
+  footer.foot{font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<div class="offline-banner" id="offlineBanner">⚠ لا يوجد اتصال بالإنترنت حالياً — سيتم حفظ بياناتك محلياً وإرسالها تلقائياً عند عودة الاتصال</div>
+<div class="offline-banner" id="announcementBanner" style="display:none;background:var(--primary-tint);color:var(--primary-dark);border-bottom:1px solid var(--line)"></div>
+<div class="offline-banner" id="systemClosedBanner" style="display:none"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="emblem"><img src="data:image/jpeg;base64,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" alt="شعار الجامعة التقنية الجنوبية - كلية البوليتكنك/القرنة" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+    <div class="titles">
+      <h1>الجامعة التقنية الجنوبية - كلية البوليتكنك/القرنة</h1>
+      <p>شعبة شؤون الطلبة والتسجيل - نظام التقديم على الدراسة المسائية</p>
+    </div>
+  </div>
+  <div class="clock" id="clock">--:--:--</div>
+</header>
+
+<div class="container" id="app">
+
+  <!-- ===================== الرئيسية ===================== -->
+  <section class="screen active" id="screen-home">
+    <div class="home-grid">
+      <div class="home-card" onclick="openStudentIntro()" role="button" tabindex="0">
+        <div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z"/><path d="M6 10v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M21 7.5V14"/></svg></div>
+        <h2>دخول الطالب</h2>
+        <p class="small">تسجيل الدخول / تسجيل جديد وتعبئة استمارة التقديم</p>
+        <span class="go">‹</span>
+      </div>
+      <div class="home-card" onclick="go('supervisorAuth')" role="button" tabindex="0">
+        <div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18"/></svg></div>
+        <h2>دخول المشرف</h2>
+        <p class="small">مراجعة الطلبات والإحصاءات وإدارة القبول</p>
+        <span class="go">‹</span>
+      </div>
+    </div>
+    <div class="home-links">
+      <button class="link-btn" onclick="go('inquiry')">
+        <svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        نافذة الاستعلامات
+      </button>
+      <span style="color:var(--line)">|</span>
+      <button class="link-btn" onclick="go('adminAuth')">
+        <svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1h.1a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+        دخول الإدارة
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== لوحة تعليمات النظام (الطالب) ===================== -->
+  <section class="screen" id="screen-studentIntro">
+    <div class="card">
+      <div class="intro-topbar">
+        <button class="link-btn" onclick="go('home')">» الرئيسية</button>
+        <button class="skip" onclick="skipStudentIntro()">تخطي التعليمات ‹‹</button>
+      </div>
+      <div class="intro-dots" id="introDots"></div>
+      <div id="introSlidesBox"></div>
+      <div class="btn-row" style="justify-content:space-between;margin-top:18px">
+        <button class="btn secondary" id="introPrevBtn" onclick="introPrev()">» السابق</button>
+        <button class="btn" id="introNextBtn" onclick="introNext()">التالي «</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== رسالة عدم إمكانية التقديم ===================== -->
+  <section class="screen" id="screen-ineligible">
+    <div class="card center" style="max-width:540px;margin:40px auto">
+      <div style="font-size:46px;margin-bottom:8px">⛔</div>
+      <h2 id="ineligibleTitle" style="color:var(--danger);margin-top:0">تعذّر المتابعة بالتقديم</h2>
+      <div class="msg err" id="ineligibleMsg" style="text-align:right">لا يمكنك التقديم بسبب (المعدل/القسم).</div>
+      <p class="small" id="ineligibleDetail" style="text-align:right">بيانات الدراسة التي أدخلتها (نوع الدراسة/الفرع المِهني والمعدل) لا تحقق الحد الأدنى للقبول في أيٍّ من القسمين المتاحين حالياً. تم إنهاء هذه الجلسة، ويمكنك إغلاق هذه الصفحة الآن.</p>
+    </div>
+  </section>
+
+  <!-- ===================== دخول/تسجيل الطالب ===================== -->
+  <section class="screen" id="screen-studentAuth">
+    <div class="card">
+      <button class="link-btn" onclick="go('home')">» رجوع للرئيسية</button>
+      <div class="tabs" style="margin-top:14px">
+        <button class="tab-btn active" data-t="login" onclick="switchTab(this,'stuAuthLogin','stuAuthRegister')">تسجيل الدخول</button>
+        <button class="tab-btn" data-t="register" onclick="switchTab(this,'stuAuthRegister','stuAuthLogin')">تسجيل جديد</button>
+      </div>
+      <div id="msgStuAuth"></div>
+
+      <div id="stuAuthLogin">
+        <p class="small">يمكنك الدخول بالمعرف والرمز المرسلين إليك عبر البريد، أو بكتابة بريدك الإلكتروني لإرسال رمز دخول OTP.</p>
+        <div class="grid2">
+          <div class="field"><label>المعرف (ID)</label><input id="loginId" placeholder="مثال: ST123456" autocomplete="username"></div>
+          <div class="field"><label>الرمز</label>
+            <div class="pwd-wrap"><input id="loginCode" type="password" placeholder="الرمز السري" autocomplete="current-password"><button type="button" class="pwd-eye" onclick="togglePwd('loginCode',this)">إظهار</button></div>
+            <div class="hint">الرمز غير حساس لحالة الأحرف (كبيرة/صغيرة)</div>
+          </div>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="studentLoginById()">دخول بالمعرف والرمز</button></div>
+        <hr style="margin:18px 0;border:none;border-top:1px solid var(--line)">
+        <div class="field"><label>أو أدخل بريدك الإلكتروني لإرسال رمز OTP</label><input id="loginEmail" placeholder="example@mail.com" type="email"></div>
+        <div class="btn-row" id="otpLoginRow"><button class="btn secondary" onclick="sendOtpFlow('loginEmail','otpLoginRow','studentOtpVerify')">إرسال رمز التحقق</button></div>
+      </div>
+
+      <div id="stuAuthRegister" style="display:none">
+        <div class="field"><label>اسم الطالب</label><input id="regName" autocomplete="name"></div>
+        <div class="field"><label>رقم الهاتف</label><input id="regPhone" placeholder="07xxxxxxxxx" inputmode="numeric"></div>
+        <div class="field"><label>البريد الإلكتروني</label><input id="regEmail" type="email"></div>
+        <p class="small">ملاحظة: يتم إرسال المعرف والرمز إلى بريدك الإلكتروني بعد التسجيل. لا يحق التقديم بنفس البريد أكثر من مرة.</p>
+        <div class="btn-row" id="otpRegRow"><button class="btn secondary" onclick="sendOtpFlow('regEmail','otpRegRow','studentRegisterOtpVerify')">إرسال رمز التحقق والتسجيل</button></div>
+      </div>
+    </div>
+
+    <div class="card center" id="studentCredCard" style="display:none">
+      <div class="check" style="width:44px;height:44px;margin-bottom:10px"><svg class="ic" style="stroke:#fff" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h2>تم إنشاء حسابك بنجاح</h2>
+      <p>المعرف: <b id="credId"></b> &nbsp;|&nbsp; الرمز: <b id="credCode"></b></p>
+      <div id="qrcode" class="center" style="margin:12px 0;display:flex;justify-content:center"></div>
+      <p class="small">احتفظ بهذه البيانات في مكان آمن؛ لن تُعرض مرة أخرى.</p>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn accent dl" onclick="downloadCredScreenshot()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>تنزيل بيانات الدخول PDF</button>
+        <button class="btn" onclick="proceedToForm()">متابعة تعبئة استمارة التقديم</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== لوحة الطالب بعد الدخول (حالة الطلب + إكمال التسجيل) ===================== -->
+  <section class="screen" id="screen-studentHome">
+    <button class="link-btn" onclick="go('home')">» الرئيسية</button>
+    <div id="studentHomeStatus" style="margin-top:14px"></div>
+    <div id="studentHomeRegPanel" style="margin-top:16px"></div>
+  </section>
+
+  <!-- ===================== استمارة التقديم ===================== -->
+  <section class="screen" id="screen-studentForm">
+    <div class="card">
+      <button class="link-btn" onclick="go('home')">» الرئيسية</button>
+      <h2 style="margin-top:12px">استمارة التقديم على الدراسة المسائية</h2>
+      <div class="stepper" id="formStepper">
+        <div class="step active" data-step="1"><span class="line"></span><span class="dot">1</span><span class="label">معلومات الطالب</span></div>
+        <div class="step" data-step="2"><span class="line"></span><span class="dot">2</span><span class="label">معلومات الدراسة</span></div>
+        <div class="step" data-step="3"><span class="line"></span><span class="dot">3</span><span class="label">الدراسة السابقة</span></div>
+        <div class="step" data-step="4"><span class="line"></span><span class="dot">4</span><span class="label">التقديم</span></div>
+        <div class="step" data-step="5"><span class="line"></span><span class="dot">5</span><span class="label">رفع البيانات</span></div>
+      </div>
+      <div id="msgForm"></div>
+
+      <!-- الخطوة 1 -->
+      <div class="formStep" id="fStep1">
+        <div class="grid2">
+          <div class="field"><label>اسم الطالب الرباعي واللقب</label><input id="f_studentName"></div>
+          <div class="field"><label>الجنس</label>
+            <select id="f_gender"><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
+          </div>
+          <div class="field"><label>رقم البطاقة الموحدة</label><input id="f_nationalId" inputmode="numeric" maxlength="12"><div class="hint">12 رقماً بالضبط</div></div>
+          <div class="field"><label>تاريخ التولد</label><input type="date" id="f_birthDate"><div class="hint">يشترط ألا يقل العمر عن 17 سنة</div></div>
+          <div class="field"><label>اسم الأم الثلاثي</label><input id="f_motherName"></div>
+          <div class="field"><label>السكن (محافظة/قضاء/ناحية)</label><input id="f_address"></div>
+          <div class="field"><label>رقم الهاتف</label><input id="f_phone" placeholder="07xxxxxxxxx" inputmode="numeric"></div>
+          <div class="field"><label>البريد الإلكتروني</label><input id="f_email" type="email"></div>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="tryNextStep(1)">التالي «</button></div>
+      </div>
+
+      <!-- الخطوة 2 -->
+      <div class="formStep" id="fStep2" style="display:none">
+        <div class="grid2">
+          <div class="field"><label>نوع الدراسة</label>
+            <select id="f_studyType" onchange="toggleBranchRequired()"><option>علمي</option><option>تطبيقي</option><option>احيائي</option><option>مِهني</option></select>
+          </div>
+          <div class="field"><label>الرقم الامتحاني</label><input id="f_examNumber"></div>
+          <div class="field"><label>اسم المدرسة</label><input id="f_schoolName"></div>
+          <div class="field" id="f_branch_wrap"><label id="f_branch_label">فرع المِهني (إن وجد)</label><input id="f_branch"></div>
+          <div class="field"><label>سنة التخرج من الإعدادية</label><input id="f_gradYear" inputmode="numeric"></div>
+          <div class="field"><label>دور النجاح (الإعدادية/المِهنية)</label>
+            <select id="f_successRound">
+              <option value="">-- اختر --</option>
+              <option>الدور الأول</option>
+              <option>الدور الثاني</option>
+              <option>الدور الثالث (التكميلي)</option>
+            </select>
+          </div>
+          <div class="field"><label>عدد الدروس</label><input id="f_lessonsCount" type="number" min="1"></div>
+          <div class="field"><label>مجموع الدرجات المثبت في وثيقة او تأييد التخرج</label><input id="f_totalScore" type="number"></div>
+          <div class="field"><label>المعدل</label><input id="f_average" type="number" step="0.01"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn secondary" onclick="showFormStep(1)">» السابق</button>
+          <button class="btn" onclick="tryNextStep(2)">التالي «</button>
+        </div>
+      </div>
+
+      <!-- الخطوة 3: الدراسة السابقة -->
+      <div class="formStep" id="fStep3" style="display:none">
+        <p class="small">تُعبأ هذه المعلومات فقط في حال وجود ترقين قيد سابق من أي كلية أو معهد.</p>
+        <div class="field"><label>هل تم ترقين قيدك سابقاً؟</label>
+          <select id="f_prevExpelled" onchange="togglePrevExpelledBlock()">
+            <option value="لا">لا</option>
+            <option value="نعم">نعم</option>
+          </select>
+        </div>
+        <div id="prevExpelledBlock" class="grid2" style="display:none">
+          <div class="field"><label>سنة الترقين</label><input id="f_prevExpelledYear" inputmode="numeric"></div>
+          <div class="field"><label>الكلية/المعهد</label><input id="f_prevCollege"></div>
+          <div class="field"><label>الدراسة</label>
+            <select id="f_prevStudyType">
+              <option value="">-- اختر --</option>
+              <option>صباحي</option>
+              <option>مسائي</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label style="display:flex;align-items:flex-start;gap:8px;font-weight:400;cursor:pointer">
+            <input type="checkbox" id="f_pledge" style="margin-top:3px;flex:0 0 auto">
+            <span>أتعهد بصحة المعلومات الواردة في أعلاه وبأن لم يتم ترقين قيدي سابقاً بسبب الغش أو المحاولة فيه او عقوبة انضباطية وأتحمل كافة التبعات القانونية خلاف ذلك ولأجله وقعت.</span>
+          </label>
+        </div>
+        <div class="btn-row">
+          <button class="btn secondary" onclick="showFormStep(2)">» السابق</button>
+          <button class="btn" onclick="tryNextStep(3)">التالي «</button>
+        </div>
+      </div>
+
+      <!-- الخطوة 4 -->
+      <div class="formStep" id="fStep4" style="display:none">
+        <div class="field"><label>الاختيار الأول</label>
+          <select id="f_choice1"><option>قسم تقنيات هندسة الحاسوب والذكاء الاصطناعي</option><option>قسم تقنيات الهندسة الكهربائية</option></select>
+        </div>
+        <div class="field"><label>الاختيار الثاني</label>
+          <select id="f_choice2"><option>قسم تقنيات الهندسة الكهربائية</option><option>قسم تقنيات هندسة الحاسوب والذكاء الاصطناعي</option></select>
+        </div>
+        <div class="btn-row">
+          <button class="btn secondary" onclick="showFormStep(3)">» السابق</button>
+          <button class="btn" onclick="tryNextStep(4)">التالي «</button>
+        </div>
+      </div>
+
+      <!-- الخطوة 5 -->
+      <div class="formStep" id="fStep5" style="display:none">
+        <p class="small">رفع جميع المستندات أدناه إلزامي ولا يمكن إرسال الطلب بدونها (صور فقط، حتى 8 ميجابايت لكل صورة). في حال عدم وجود البطاقة الموحدة للأب أو الأم يتم إرفاق شهادة الوفاة بدلاً عنها.</p>
+        <div class="upload-progress"><div class="bar-outer"><i id="uploadProgressBar"></i></div><span id="uploadProgressText">0 من 9 مستندات مرفوعة</span></div>
+        <div class="file-grid" id="fileGrid"></div>
+        <div class="btn-row">
+          <button class="btn secondary" onclick="showFormStep(4)">» السابق</button>
+          <button class="btn" id="submitAppBtn" onclick="submitApplication()" disabled>أكمل رفع كل المستندات لإرسال الطلب</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card receipt" id="appSuccessCard" style="display:none">
+      <div class="check"><svg class="ic" style="stroke:#fff" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div class="center">
+        <h2 style="margin-top:0">تم استلام طلبكم بنجاح</h2>
+        <p class="small">كود الطلب الخاص بكم</p>
+        <div class="code" id="appCode">--------</div>
+        <p class="small" id="appSuccessNote">جارٍ إكمال معالجة طلبكم الآن، وستصلكم رسالة تأكيد نهائية تتضمن استمارة PDF عبر البريد الإلكتروني خلال دقائق قليلة. يمكنكم أيضاً متابعة حالة الطلب من نافذة الاستعلامات.</p>
+        <div class="btn-row" style="justify-content:center">
+          <a class="btn accent dl" id="appPdfLink" target="_blank" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>عرض استمارة التقديم PDF</a>
+          <button class="btn" onclick="go('home')">الرئيسية</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== نافذة الاستعلامات ===================== -->
+  <section class="screen" id="screen-inquiry">
+    <div class="card">
+      <button class="link-btn" onclick="go('home')">» الرئيسية</button>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
+        <div class="icon" style="width:44px;height:44px;background:var(--primary-tint);color:var(--primary);border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">
+          <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        </div>
+        <div>
+          <h2 style="margin:0">نافذة الاستعلامات</h2>
+          <p class="small" style="margin:2px 0 0">تابع حالة طلبك، أكمل استمارة التسجيل بعد القبول، أو راسل مسؤول النظام</p>
+        </div>
+      </div>
+      <div class="tabs" style="margin-top:16px">
+        <button class="tab-btn active" onclick="switchTab(this,'inqCheckTab','inqMsgTab')">الاستعلام عن حالة الطلب</button>
+        <button class="tab-btn" onclick="switchTab(this,'inqMsgTab','inqCheckTab')">مراسلة مسؤول النظام</button>
+      </div>
+      <div id="inqCheckTab">
+        <div class="field"><label>رقم الطلب (المعاملة) أو البريد الإلكتروني</label><input id="inqQuery" type="text" placeholder="مثال: كود الطلب أو name@example.com"></div>
+        <div class="btn-row" id="inqOtpRow"><button class="btn" onclick="startInquiryOtp()">إرسال رمز التحقق</button></div>
+        <div id="inqResult" style="margin-top:16px"></div>
+        <div id="regFormPanel" style="margin-top:16px"></div>
+      </div>
+      <div id="inqMsgTab" style="display:none">
+        <div class="field"><label>الاسم</label><input id="inqName"></div>
+        <div class="field"><label>البريد الإلكتروني</label><input id="inqEmail2" type="email"></div>
+        <div class="field"><label>المشكلة</label><textarea id="inqMsg" rows="3"></textarea></div>
+        <div class="btn-row"><button class="btn secondary" onclick="sendInquiryMsg()">إرسال</button></div>
+        <div id="msgInquiry"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== دخول/تسجيل المشرف ===================== -->
+  <section class="screen" id="screen-supervisorAuth">
+    <div class="card">
+      <button class="link-btn" onclick="go('home')">» الرئيسية</button>
+      <div class="tabs" style="margin-top:14px">
+        <button class="tab-btn active" onclick="switchTab(this,'supAuthLogin','supAuthRegister')">تسجيل الدخول</button>
+        <button class="tab-btn" onclick="switchTab(this,'supAuthRegister','supAuthLogin')">تسجيل جديد</button>
+      </div>
+      <div id="msgSupAuth"></div>
+      <div id="supAuthLogin">
+        <div class="grid2">
+          <div class="field"><label>المعرف</label><input id="supId" autocomplete="username"></div>
+          <div class="field"><label>الرمز</label>
+            <div class="pwd-wrap"><input id="supCode" type="password" autocomplete="current-password"><button type="button" class="pwd-eye" onclick="togglePwd('supCode',this)">إظهار</button></div>
+            <div class="hint">الرمز غير حساس لحالة الأحرف</div>
+          </div>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="supervisorLogin()">دخول بالمعرف والرمز</button></div>
+        <hr style="margin:18px 0;border:none;border-top:1px solid var(--line)">
+        <div class="field"><label>أو أدخل بريدك الإلكتروني لإرسال رمز OTP</label><input id="supLoginEmail" placeholder="example@mail.com" type="email"></div>
+        <div class="btn-row" id="supOtpLoginRow"><button class="btn secondary" onclick="sendOtpFlow('supLoginEmail','supOtpLoginRow','supervisorOtpVerify')">إرسال رمز التحقق</button></div>
+      </div>
+      <div id="supAuthRegister" style="display:none">
+        <div class="field"><label>اسم الموظف</label><input id="supName"></div>
+        <div class="field"><label>الصفة الوظيفية</label>
+          <select id="supRole">
+            <option>عميد الكلية</option><option>معاون العميد</option><option>مسؤول الدراسات والتخطيط</option>
+            <option>رؤساء الاقسام</option><option>مسؤول شعبة شؤون الطلبة والتسجيل</option>
+            <option>موظف شعبة شؤون الطلبة والتسجيل</option><option>مسؤول النظام</option>
+          </select>
+        </div>
+        <div class="field"><label>البريد الإلكتروني</label><input id="supEmail" type="email"></div>
+        <p class="small">يتم إرسال المعرف والرمز عبر البريد الإلكتروني بعد موافقة مسؤول النظام على الطلب.</p>
+        <div class="btn-row"><button class="btn secondary" onclick="supervisorRegister()">إرسال طلب التسجيل</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== لوحة المشرف ===================== -->
+  <section class="screen" id="screen-supervisorDash">
+    <div class="card">
+      <div class="top" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div><b id="supWelcome"></b> <span class="small" id="supRoleLabel"></span></div>
+        <div class="btn-row" style="margin-top:0">
+          <button class="btn secondary dl" onclick="downloadStudentDataExcel(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>تحميل بيانات الطلاب</button>
+          <button class="btn secondary" onclick="openSystemInfo()">معلومات حول النظام</button>
+          <button class="btn secondary" onclick="go('adminAuth')" id="btnGoAdmin" style="display:none">نافذة الإعدادات</button>
+          <button class="btn danger" onclick="logoutSupervisor()">تسجيل خروج</button>
+        </div>
+      </div>
+      <div class="tabs" style="margin-top:16px">
+        <button class="tab-btn active" onclick="switchDashTab(this,'dashRequests')">قبول الطلبات</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'dashStatus')">حالة الطلبات</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'dashStats')">الإحصاءات</button>
+      </div>
+      <div id="dashRequests"><div id="requestsList"></div></div>
+      <div id="dashStatus" style="display:none"><div id="statusList"></div></div>
+      <div id="dashStats" style="display:none"><div id="statsBox"></div></div>
+    </div>
+  </section>
+
+  <!-- ===================== دخول الإدارة ===================== -->
+  <section class="screen" id="screen-adminAuth">
+    <div class="card">
+      <button class="link-btn" onclick="go('home')">» رجوع</button>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
+        <div class="icon" style="width:44px;height:44px;background:var(--accent-tint);color:var(--accent-dark);border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">
+          <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1h.1a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+        </div>
+        <div>
+          <h2 style="margin:0">نافذة الإعدادات</h2>
+          <p class="small" style="margin:2px 0 0">دخول مخصص لمسؤول النظام فقط</p>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:16px">
+        <div class="field"><label>معرف الأدمن</label><input id="adminId" autocomplete="username"></div>
+        <div class="field"><label>الرمز</label>
+          <div class="pwd-wrap"><input id="adminCode" type="password" autocomplete="current-password"><button type="button" class="pwd-eye" onclick="togglePwd('adminCode',this)">إظهار</button></div>
+          <div class="hint">الرمز غير حساس لحالة الأحرف</div>
+        </div>
+      </div>
+      <div id="msgAdminAuth"></div>
+      <div class="btn-row"><button class="btn" onclick="adminLogin()">دخول</button></div>
+    </div>
+  </section>
+
+  <!-- ===================== لوحة الإدارة ===================== -->
+  <!-- ===================== معلومات حول النظام ===================== -->
+  <section class="screen" id="screen-systemInfo">
+    <div class="card">
+      <button class="link-btn" onclick="go('supervisorDash')">» رجوع للوحة المشرف</button>
+      <h2 style="margin-top:12px">معلومات حول النظام</h2>
+      <div class="tabs" style="margin-top:12px">
+        <button class="tab-btn active" onclick="switchDashTab(this,'infoApp')">نموذج استمارة التقديم</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'infoReg')">نموذج استمارة التسجيل</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'infoMails')">الرسائل المرسلة</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'infoExplain')">شرح النظام</button>
+      </div>
+
+      <div id="infoApp"><div id="infoAppBox"></div></div>
+      <div id="infoReg" style="display:none"><div id="infoRegBox"></div></div>
+      <div id="infoMails" style="display:none"><div id="infoMailsBox"></div></div>
+      <div id="infoExplain" style="display:none"><div id="infoExplainBox"></div></div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-adminPanel">
+    <div class="card">
+      <div class="top" style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="margin:0">نافذة الإعدادات</h2>
+        <button class="btn danger" onclick="logoutAdmin()">خروج</button>
+      </div>
+      <div class="tabs" style="margin-top:12px">
+        <button class="tab-btn active" onclick="switchDashTab(this,'admPending')">المشرفون</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admRules')">ضوابط التقديم</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admStartDate')">بدء العام الدراسي</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admLocations')">موقع الأقسام</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admQueue')">مراقبة الطابور</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admInquiries')">الاستفسارات</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admSystemGate')">التنبيه وإغلاق النظام</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admTheme')">تعديل النظام</button>
+        <button class="tab-btn" id="tabAdmSecurity" onclick="switchDashTab(this,'admSecurity')">أمان الدخول</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admStats')">إحصاءات النظام</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admConfig')">جوجل شيت/درايف/سكريبت</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admExport')">تنزيل البيانات</button>
+        <button class="tab-btn" onclick="switchDashTab(this,'admDelete')">حذف البيانات</button>
+      </div>
+
+      <div id="admPending"><div id="pendingSupList"></div></div>
+      <div id="admRules" style="display:none">
+        <p class="small">حدّد لكل قسم الحد الأدنى للمعدل وأنواع الدراسة المقبولة، والفروع المِهنية المقبولة (إن كان "مِهني" ضمن الأنواع المقبولة). اترك القسم بلا أي قيمة إذا لم تحدد له ضوابط بعد — سيظهر عندها "غير محدد" بدل "مشمول/غير مشمول" في طلبات ذلك القسم.</p>
+        <div class="btn-row"><button class="btn secondary" onclick="fillDefaultAdmissionRules()">تعبئة القيم المطلوبة تلقائياً (معدل 55 لكلا القسمين)</button></div>
+        <div id="rulesFormBox"></div>
+        <div id="msgRules"></div>
+        <div class="btn-row"><button class="btn" onclick="saveAdmissionRules()">حفظ ضوابط التقديم</button></div>
+      </div>
+      <div id="admQueue" style="display:none">
+        <div class="grid2">
+          <div class="card"><div class="small">قيد الانتظار الآن</div><div class="stat-num" id="qPending">-</div></div>
+          <div class="card"><div class="small">تمت معالجتها</div><div class="stat-num" id="qDone">-</div></div>
+          <div class="card"><div class="small">فشل (خطأ فعلي)</div><div class="stat-num" id="qFailed">-</div></div>
+          <div class="card"><div class="small">مرفوض - مكرر</div><div class="stat-num" id="qFailedDup">-</div></div>
+        </div>
+        <div class="btn-row" style="margin-top:10px"><button class="btn" onclick="loadQueueStatus()">تحديث الأرقام الآن</button></div>
+
+        <hr style="margin:20px 0;border:none;border-top:1px solid var(--line)">
+        <h2 style="font-size:15px">التحكم اليدوي بسرعة المعالجة</h2>
+        <p class="small">قلّل "عدد الطلبات لكل دورة" و/أو زد الفترة الزمنية بأوقات الذروة (ضغط كبير على الخادم بنفس الوقت)، وزد العدد أو قلّل الفترة بأوقات الهدوء لتسريع إفراغ الطابور. التغيير يُطبَّق فوراً على المُشغِّل الزمني.</p>
+        <div class="grid2">
+          <div class="field"><label>عدد الطلبات لكل دورة معالجة</label><input type="number" id="qBatchSize" min="1" max="200" placeholder="مثال: 12"></div>
+          <div class="field"><label>الفترة الزمنية بين كل دورة</label>
+            <select id="qInterval">
+              <option value="1">كل 1 دقيقة (أسرع - لأوقات الذروة القصوى)</option>
+              <option value="5">كل 5 دقائق (افتراضي)</option>
+              <option value="10">كل 10 دقائق</option>
+              <option value="15">كل 15 دقيقة</option>
+              <option value="30">كل 30 دقيقة (أبطأ - لأوقات الهدوء)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>البريد الإلكتروني لتنبيهات الفشل (اختياري)</label><input id="qAlertEmail" placeholder="admin@your-college.edu.iq"></div>
+        <p class="small">إذا ضبطت هذا البريد، سيصلك تنبيه تلقائي فوري كل ما فشل طلب فعلياً أثناء المعالجة (خطأ تقني حقيقي، وليس رفض طبيعي بسبب التكرار).</p>
+        <div id="msgQueue"></div>
+        <div class="btn-row"><button class="btn" onclick="saveQueueSettings()">حفظ الإعدادات</button></div>
+
+        <hr style="margin:20px 0;border:none;border-top:1px solid var(--line)">
+        <h2 style="font-size:15px">الطلبات قيد الانتظار حالياً (آخر 50)</h2>
+        <p class="small">إلغاء الطلب هنا يحذفه نهائياً من الطابور قبل معالجته، ويُرسل للطالب بريد تنبيه بالإلغاء. لا يمكن التراجع عن هذا الإجراء.</p>
+        <div id="qPendingList"><p class="small">اضغط "تحديث الأرقام الآن" لعرض القائمة.</p></div>
+
+        <hr style="margin:20px 0;border:none;border-top:1px solid var(--line)">
+        <h2 style="font-size:15px">آخر 20 حالة فشل</h2>
+        <div id="qFailuresList"><p class="small">اضغط "تحديث الأرقام الآن" لعرض القائمة.</p></div>
+      </div>
+      <div id="admInquiries" style="display:none"><div id="inquiriesList"></div></div>
+      <div id="admSystemGate" style="display:none">
+        <h3 style="margin:4px 0">📢 التنبيه العام (يظهر لكل زوار الموقع أعلى الصفحة)</h3>
+        <div class="field"><label>تفعيل التنبيه</label>
+          <select id="annEnabled"><option value="no">معطّل</option><option value="yes">مفعّل</option></select>
+        </div>
+        <div class="field"><label>نص التنبيه</label><textarea id="annText" rows="2" placeholder="مثال: سيتم تحديث النظام غداً الساعة 10 مساءً، وقد يتوقف الموقع لبضع دقائق"></textarea></div>
+        <div id="msgAnnouncement"></div>
+        <div class="btn-row"><button class="btn" onclick="saveAnnouncement()">حفظ التنبيه</button></div>
+
+        <hr style="margin:22px 0;border:none;border-top:1px solid var(--line)">
+
+        <h3 style="margin:4px 0">🔒 إغلاق / فتح التقديم</h3>
+        <p class="small">عند الإغلاق (بأي طريقة من الطرق التالية) لن يتمكن أي طالب من إرسال طلب تقديم جديد، وستظهر له رسالة توضيحية بدلاً من ذلك. هذا لا يؤثر على دخول المشرفين أو الاستعلام عن الطلبات القائمة.</p>
+
+        <div class="field"><label>إغلاق يدوي فوري (يتجاوز كل الإعدادات أدناه)</label>
+          <select id="sysManualClosed"><option value="no">النظام مفتوح</option><option value="yes">مغلق الآن يدوياً</option></select>
+        </div>
+
+        <div class="grid2">
+          <div class="field"><label>تاريخ ووقت فتح التقديم (اختياري)</label><input type="datetime-local" id="sysOpenAt"></div>
+          <div class="field"><label>تاريخ ووقت إغلاق التقديم (اختياري)</label><input type="datetime-local" id="sysCloseAt"></div>
+        </div>
+        <p class="small">اترك أي من الحقلين فارغاً لعدم التقييد به. يمكنك تحديد الفتح فقط، أو الإغلاق فقط، أو كليهما معاً.</p>
+
+        <div class="field"><label>تفعيل ساعات عمل يومية محددة</label>
+          <select id="sysDailyEnabled" onchange="toggleDailyHoursFields()"><option value="no">معطّل</option><option value="yes">مفعّل</option></select>
+        </div>
+        <div class="grid2" id="dailyHoursFields" style="display:none">
+          <div class="field"><label>وقت الفتح اليومي</label><input type="time" id="sysDailyOpen"></div>
+          <div class="field"><label>وقت الإغلاق اليومي</label><input type="time" id="sysDailyClose"></div>
+        </div>
+
+        <div class="field"><label>رسالة مخصصة تظهر للطالب عند الإغلاق (اختياري)</label><textarea id="sysClosedMsg" rows="2" placeholder="اتركه فارغاً لعرض رسالة تلقائية توضح السبب (لم يبدأ / انتهى / خارج ساعات العمل)"></textarea></div>
+
+        <div id="msgSystemGate"></div>
+        <div class="btn-row"><button class="btn" onclick="saveSystemGate()">حفظ إعدادات الإغلاق/الفتح</button></div>
+      </div>
+      <div id="admStartDate" style="display:none">
+        <p class="small">هذا التاريخ يُستخدم تلقائياً برسالة "إكمال التسجيل" التي تُرسل للطالب بعد قبوله نهائياً في قسمه.</p>
+        <div class="field"><label>تاريخ بدء العام الدراسي</label><input type="date" id="startDateInput"></div>
+        <div id="msgStartDate"></div>
+        <div class="btn-row"><button class="btn" onclick="saveStartDate()">حفظ التاريخ</button></div>
+      </div>
+      <div id="admLocations" style="display:none">
+        <p class="small">حدّد موقع كل قسم — يُستخدم تلقائياً برسالة "إكمال التسجيل".</p>
+        <div id="deptLocationsBox"></div>
+        <div id="msgLocations"></div>
+        <div class="btn-row"><button class="btn" onclick="saveDeptLocations()">حفظ المواقع</button></div>
+      </div>
+
+      <div id="admTheme" style="display:none">
+        <div class="field"><label>اللون الأساسي</label><div class="color-swatches"><input type="color" id="themePrimary" value="#0b5940"></div></div>
+        <div class="field"><label>اللون الثانوي</label><div class="color-swatches"><input type="color" id="themeAccent" value="#b8862c"></div></div>
+        <div class="field"><label>حجم الخط الأساسي</label>
+          <select id="themeFontSize"><option value="14px">صغير</option><option value="16px" selected>متوسط</option><option value="18px">كبير</option></select>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="saveTheme()">حفظ التنسيق</button></div>
+      </div>
+
+      <div id="admSecurity" style="display:none">
+        <p class="msg info">يُنصح بشدة بتغيير بيانات دخول الإدارة عن القيم الافتراضية للحفاظ على أمان النظام.</p>
+        <div class="grid2">
+          <div class="field"><label>المعرف الجديد</label><input id="newAdminId"></div>
+          <div class="field"><label>الرمز الجديد (6 أحرف على الأقل)</label>
+            <div class="pwd-wrap"><input id="newAdminCode" type="password"><button type="button" class="pwd-eye" onclick="togglePwd('newAdminCode',this)">إظهار</button></div>
+          </div>
+        </div>
+        <div id="msgSecurity"></div>
+        <div class="btn-row"><button class="btn danger" onclick="doChangeAdminCode()">تغيير بيانات الدخول</button></div>
+      </div>
+
+      <div id="admStats" style="display:none">
+        <div class="grid2">
+          <div class="card"><div class="small">المستخدمون اليوم</div><div class="stat-num" id="statDaily">-</div></div>
+          <div class="card"><div class="small">المستخدمون هذا الأسبوع</div><div class="stat-num" id="statWeekly">-</div></div>
+          <div class="card"><div class="small">المستخدمون هذا الشهر</div><div class="stat-num" id="statMonthly">-</div></div>
+          <div class="card"><div class="small">متصلون الآن (~5 دقائق)</div><div class="stat-num" id="statOnline">-</div></div>
+        </div>
+      </div>
+
+      <div id="admConfig" style="display:none">
+        <div class="field"><label>رابط جوجل شيت</label><input id="cfgSheet"></div>
+        <div class="field"><label>رابط جوجل درايف</label><input id="cfgDrive"></div>
+        <div class="field"><label>رابط سكريبت (Web App URL)</label><input id="cfgScript"></div>
+        <div class="btn-row"><button class="btn" onclick="saveConfig()">حفظ</button></div>
+      </div>
+
+      <div id="admExport" style="display:none">
+        <div class="field"><label>اسم الشيت المراد تصديره</label>
+          <select id="exportSheet"><option>Applications</option><option>Students</option><option>Supervisors</option><option>Logs</option></select>
+        </div>
+        <div class="btn-row"><button class="btn accent" onclick="doExport()">تنزيل بصيغة Excel</button></div>
+        <div id="exportResult" style="margin-top:10px"></div>
+        <hr style="margin:20px 0;border:none;border-top:1px solid var(--line)">
+        <h2 style="font-size:15px">تصدير مجمّع لاستمارات PDF (ملف ZIP)</h2>
+        <p class="small">يجمع استمارات التقديم PDF لعدة طلبة بملف واحد لتسهيل الطباعة دفعة واحدة (حد أقصى 150 طلباً بالتصدير الواحد).</p>
+        <div class="field"><label>تصفية حسب الحالة (اختياري)</label>
+          <select id="bulkExportStatus">
+            <option value="">كل الطلبات</option>
+            <option value="الطلب قيد التنفيذ">الطلب قيد التنفيذ فقط</option>
+          </select>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="doBulkExport()">تنزيل ملف ZIP</button></div>
+        <div id="bulkExportResult" style="margin-top:10px"></div>
+      </div>
+
+      <div id="admDelete" style="display:none">
+        <p class="msg err">تحذير: هذا الإجراء سيحذف كل البيانات في الشيت المحدد نهائياً ولا يمكن التراجع عنه.</p>
+        <div class="field"><label>اسم الشيت</label>
+          <select id="delSheet"><option>Applications</option><option>Students</option><option>Supervisors</option><option>Logs</option><option>OTP</option></select>
+        </div>
+        <div class="field"><label>اكتب DELETE للتأكيد</label><input id="delConfirm"></div>
+        <div class="btn-row"><button class="btn danger" onclick="doDelete()">حذف نهائي</button></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="foot">
+  <div>الجامعة التقنية الجنوبية - كلية البوليتكنك/القرنة - شعبة شؤون الطلبة والتسجيل/الدراسة المسائية</div>
+</footer>
+
+<div id="toastHost"></div>
+
+<script>
+/* ============================= الإعدادات ============================= */
+const CONFIG = {
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbx-Tqu1wqrU3E4jRq5veQHTY6wxyzEvVEykBEHnHdVnQn0WNVL5Nbeyv4kwkvwmCXyj7w/exec'
+};
+const FILE_FIELDS = [
+  'بطاقة السكن (الوجه)', 'بطاقة السكن (الظهر)',
+  'البطاقة الموحدة (الوجه)', 'البطاقة الموحدة (الظهر)',
+  'الوثيقة الدراسة / تأييد بالدرجات',
+  'البطاقة الموحدة للأب (الوجه)', 'البطاقة الموحدة للأب (الظهر)',
+  'البطاقة الموحدة للأم (الوجه)', 'البطاقة الموحدة للأم (الظهر)'
+];
+// مستند اختياري: رمز QR مرافق للوثيقة الدراسية (إن وُجد على الوثيقة الأصلية) — لا يدخل ضمن العدّاد الإلزامي
+const QR_STUDY_DOC_FIELD = 'QR كود الوثيقة الدراسية';
+const REQUEST_TIMEOUT_MS = 25000;
+const DEPARTMENTS = ['قسم تقنيات هندسة الحاسوب والذكاء الاصطناعي', 'قسم تقنيات الهندسة الكهربائية'];
+const STUDY_TYPES = ['علمي', 'تطبيقي', 'احيائي', 'مِهني'];
+
+// ضوابط القبول الافتراضية المطلوبة (لكل قسم) — تُستخدم فقط لتعبئة نموذج "ضوابط التقديم" بلوحة الإدارة تلقائياً
+// كنقطة انطلاق يراجعها مسؤول النظام ويحفظها؛ لا تُكتب على الشيت مباشرة دون ضغط زر الحفظ.
+const DEFAULT_ADMISSION_RULES = [
+  {
+    department: 'قسم تقنيات هندسة الحاسوب والذكاء الاصطناعي',
+    minAverage: 55,
+    acceptedTypes: ['علمي', 'تطبيقي', 'احيائي', 'مِهني'],
+    acceptedBranches: ['الحاسوب وتقنية المعلومات', 'أجهزة الهاتف والحاسوب المحمول', 'تجميع وصيانة الحاسوب', 'شبكات الحاسوب', 'قوى كهرباء']
+  },
+  {
+    department: 'قسم تقنيات الهندسة الكهربائية',
+    minAverage: 55,
+    acceptedTypes: ['علمي', 'تطبيقي', 'مِهني'],
+    acceptedBranches: ['الحاسوب وتقنية المعلومات', 'أجهزة الهاتف والحاسوب المحمول', 'تجميع وصيانة الحاسوب', 'شبكات الحاسوب', 'صناعي', 'أجهزة طبية', 'تكنولوجيا الاعلام', 'توليد الطاقة الكهربائية ونقلها', 'صيانة المصاعد الكهربائية', 'صيانة منظومات الليزر', 'اتصالات', 'الكترونيك وسيطرة', 'قوى كهرباء']
+  }
+];
+
+// محتوى شرائح لوحة تعليمات النظام التي تظهر للطالب عند دخوله لأول مرة (قبل شاشة تسجيل الدخول)
+const STUDENT_INTRO_SLIDES = [
+`<span class="badge-idx">1 / 6</span>
+ <h2><span class="emoji">🏫</span> التعريف بكلية البوليتكنك/القرنة</h2>
+ <p>تأسست كلية البوليتكنك/القرنة سنة 2025، وتضم قسمين هما <b>قسم تقنيات الهندسة الكهربائية</b> و<b>قسم تقنيات هندسة الحاسوب والذكاء الاصطناعي</b>.</p>
+ <p>تقع الكلية في محافظة البصرة، قضاء القرنة، ناحية الشرش، قرب محطة الغاز.</p>`,
+
+`<span class="badge-idx">2 / 6</span>
+ <h2><span class="emoji">🎓</span> التعريف بنظام البوليتكنك/القرنة</h2>
+ <p>نظام البوليتكنك هو نظام أكاديمي يجمع بين شهادتي <b>الدبلوم التقني</b> و<b>البكالوريوس الهندسي</b> في مسار دراسي واحد.</p>
+ <p>يدرس الطالب خلال السنتين الأولى والثانية منهج الدبلوم التقني ويتحصّل على شهادته، ثم يُكمل الطالب المرحلتين الثالثة والرابعة (البكالوريوس) وفقاً لنظام التجسير.</p>`,
+
+`<span class="badge-idx">3 / 6</span>
+ <h2><span class="emoji">📝</span> نظام التقديم والتسجيل على الدراسة المسائية</h2>
+ <p>يتم القبول بالدراسة المسائية على مرحلتين متتاليتين:</p>
+ <div class="info-box"><b>المرحلة الأولى - التقديم:</b> يعبّئ الطالب استمارة التقديم الإلكترونية ببياناته الشخصية والدراسية، ويرفع صور المستندات المطلوبة، ثم يختار قسمين بالترتيب (اختيار أول وثانٍ). عند القبول الأولي، يُطلب من الطالب مراجعة الكلية شخصياً لدفع أجور التقديم واستلام استمارة التقديم.</div>
+ <div class="info-box"><b>المرحلة الثانية - التسجيل:</b> بعد التخصيص النهائي بأحد القسمين (وفق الأهلية والمقاعد المتاحة)، يُطلب من الطالب استكمال بيانات الكفيل الضامن ودفع قسط التسجيل وتقديم الوثيقة الدراسية الأصلية، لتُستكمل استمارة التسجيل.</div>`,
+
+`<span class="badge-idx">4 / 6</span>
+ <h2><span class="emoji">⚙️</span> كيفية عمل النظام</h2>
+ <p><b>1.</b> اضغط "دخول الطالب" ثم "تسجيل جديد" وأدخل اسمك وهاتفك وبريدك الإلكتروني؛ يصلك رمز تحقق (OTP) على بريدك لإتمام التسجيل، ثم يصلك معرّف (ID) ورمز دخول سري خاصان بك.</p>
+ <p><b>2.</b> عبّئ استمارة التقديم عبر خطواتها (بيانات الطالب، بيانات الدراسة، الدراسة السابقة إن وجدت، اختيار القسمين)، ثم ارفع كل المستندات المطلوبة وأرسل الطلب.</p>
+ <p><b>3.</b> يمكنك لاحقاً الدخول بالمعرف والرمز (أو بريدك الإلكتروني) لمتابعة حالة طلبك في أي وقت.</p>
+ <p><b>4.</b> عند قبولك نهائياً بقسم محدد، تظهر لك استمارة إضافية لاستكمال بيانات الكفيل، وتُولَّد استمارتا PDF (التقديم والتسجيل) تلقائياً لك.</p>`,
+
+`<span class="badge-idx">5 / 6</span>
+ <h2><span class="emoji">💻</span> مدخلات قسم تقنيات هندسة الحاسوب والذكاء الاصطناعي</h2>
+ <div class="avg-pill">الحد الأدنى للمعدل: 55</div>
+ <div class="dept-card">
+   <h3>خريجو الدراسة الإعدادية</h3>
+   <div class="row"><b>الفرع:</b><span>علمي (تطبيقي، أحيائي)</span></div>
+ </div>
+ <div class="dept-card">
+   <h3>خريجو الإعدادية المهنية</h3>
+   <div class="row"><b>الاختصاص:</b><span>الحاسوب وتقنية المعلومات — أجهزة الهاتف والحاسوب المحمول، تجميع وصيانة الحاسوب، شبكات الحاسوب، قوى كهرباء</span></div>
+ </div>`,
+
+`<span class="badge-idx">6 / 6</span>
+ <h2><span class="emoji">⚡</span> مدخلات قسم تقنيات الهندسة الكهربائية</h2>
+ <div class="avg-pill">الحد الأدنى للمعدل: 55</div>
+ <div class="dept-card">
+   <h3>خريجو الدراسة الإعدادية</h3>
+   <div class="row"><b>الفرع:</b><span>علمي، تطبيقي</span></div>
+ </div>
+ <div class="dept-card">
+   <h3>خريجو الإعدادية المهنية</h3>
+   <div class="row"><b>الاختصاص الأول:</b><span>الحاسوب وتقنية المعلومات — أجهزة الهاتف والحاسوب المحمول، تجميع وصيانة الحاسوب، شبكات الحاسوب</span></div>
+   <div class="row"><b>الاختصاص الثاني:</b><span>صناعي — أجهزة طبية، تكنولوجيا الإعلام، توليد الطاقة الكهربائية ونقلها، صيانة المصاعد الكهربائية، صيانة منظومات الليزر، اتصالات، إلكترونيك وسيطرة، قوى كهرباء</span></div>
+ </div>`
+];
+
+let state = {
+  student: null, supervisor: null, isAdmin: false,
+  token: sessionStorage.getItem('sysToken') || null,
+  role: sessionStorage.getItem('sysRole') || null,
+  uploadedFiles: {},
+  admissionRules: null,
+  introSlide: 0,
+  branchMissingAttempts: 0
+};
+
+/* ============================= أدوات عامة ============================= */
+const DL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>';
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function isAgeAtLeast17(birthDateStr){
+  const d = new Date(birthDateStr);
+  if(isNaN(d.getTime())) return false;
+  const now = new Date();
+  let age = now.getFullYear() - d.getFullYear();
+  const m = now.getMonth() - d.getMonth();
+  if(m<0 || (m===0 && now.getDate()<d.getDate())) age--;
+  return age>=17;
+}
+function val(id){ const el=document.getElementById(id); return el? el.value.trim() : ''; }
+function togglePwd(id, btn){
+  const el = document.getElementById(id);
+  const show = el.type==='password';
+  el.type = show? 'text':'password';
+  btn.textContent = show? 'إخفاء':'إظهار';
+}
+function toast(text, type){
+  type = type || 'info';
+  const host = document.getElementById('toastHost');
+  const el = document.createElement('div');
+  el.className = 'toast '+type;
+  el.textContent = text;
+  host.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='.25s'; setTimeout(()=>el.remove(),250); }, 3600);
+}
+function showMsg(id, text, type){
+  document.getElementById(id).innerHTML = `<div class="msg ${type}">${escapeHtml(text)}</div>`;
+}
+function setSession(token, role){
+  state.token = token; state.role = role;
+  if(token){ sessionStorage.setItem('sysToken', token); sessionStorage.setItem('sysRole', role); }
+}
+function clearSession(){
+  state.token=null; state.role=null; state.student=null; state.supervisor=null; state.isAdmin=false;
+  sessionStorage.removeItem('sysToken'); sessionStorage.removeItem('sysRole');
+}
+
+/* ============================= الساعة (بغداد UTC+3) ============================= */
+function updateClock(){
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset()*60000;
+  const baghdad = new Date(utc + 3*3600000);
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const dayName = days[baghdad.getDay()];
+  const d = String(baghdad.getDate()).padStart(2,'0');
+  const m = String(baghdad.getMonth()+1).padStart(2,'0');
+  const y = baghdad.getFullYear();
+  const hh = String(baghdad.getHours()).padStart(2,'0');
+  const mm = String(baghdad.getMinutes()).padStart(2,'0');
+  const ss = String(baghdad.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${dayName} ${d}/${m}/${y} - ${hh}:${mm}:${ss} (بغداد)`;
+}
+setInterval(updateClock,1000); updateClock();
+loadSystemStatus();
+
+/* ============================= التنبيه العام + حالة إغلاق/فتح النظام ============================= */
+async function loadSystemStatus(){
+  try{
+    const r = await api('getSystemStatus',{});
+    if(!r.ok) return;
+    state.systemStatus = r;
+    const annBox = document.getElementById('announcementBanner');
+    if(r.announcement && r.announcement.enabled && String(r.announcement.text||'').trim()){
+      annBox.textContent = '📢 ' + r.announcement.text;
+      annBox.style.display = 'block';
+    } else {
+      annBox.style.display = 'none';
+    }
+    const closedBox = document.getElementById('systemClosedBanner');
+    if(!r.open){
+      closedBox.textContent = '⛔ ' + (r.closedMessage || 'التقديم مغلق حالياً');
+      closedBox.style.display = 'block';
+    } else {
+      closedBox.style.display = 'none';
+    }
+  }catch(e){}
+}
+
+/* ============================= التنقل بين الشاشات ============================= */
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// ينهي جلسة الطالب بشاشة حظر موحّدة، مع رسالة مخصّصة حسب السبب (معدل/قسم، أو عدم اختيار فرع المِهني بعد التنبيه...)
+// بلا وسائط: تُستخدم الرسالة الافتراضية بالـHTML (حالة المعدل/القسم)
+function showBlockedScreen(title, mainMsg, detailMsg){
+  if(title) document.getElementById('ineligibleTitle').textContent = title;
+  if(mainMsg) document.getElementById('ineligibleMsg').textContent = mainMsg;
+  if(detailMsg) document.getElementById('ineligibleDetail').textContent = detailMsg;
+  go('ineligible');
+}
+
+/* ============================= لوحة تعليمات النظام (شرائح الطالب) ============================= */
+function openStudentIntro(){
+  state.introSlide = 0;
+  renderIntroDots();
+  renderIntroSlide();
+  go('studentIntro');
+}
+function renderIntroDots(){
+  const box = document.getElementById('introDots');
+  box.innerHTML = STUDENT_INTRO_SLIDES.map((_, i)=>
+    `<button class="dot${i===state.introSlide?' active':''}" onclick="introGoto(${i})" aria-label="شريحة ${i+1}"></button>`
+  ).join('');
+}
+function renderIntroSlide(){
+  document.getElementById('introSlidesBox').innerHTML = `<div class="slide active">${STUDENT_INTRO_SLIDES[state.introSlide]}</div>`;
+  document.querySelectorAll('#introDots .dot').forEach((d,i)=>d.classList.toggle('active', i===state.introSlide));
+  const prevBtn = document.getElementById('introPrevBtn');
+  const nextBtn = document.getElementById('introNextBtn');
+  prevBtn.style.visibility = state.introSlide===0 ? 'hidden' : 'visible';
+  const isLast = state.introSlide === STUDENT_INTRO_SLIDES.length-1;
+  nextBtn.textContent = isLast ? 'ابدأ التقديم «' : 'التالي «';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function introGoto(i){ state.introSlide = i; renderIntroSlide(); }
+function introNext(){
+  if(state.introSlide < STUDENT_INTRO_SLIDES.length-1){ state.introSlide++; renderIntroSlide(); }
+  else { go('studentAuth'); }
+}
+function introPrev(){
+  if(state.introSlide > 0){ state.introSlide--; renderIntroSlide(); }
+}
+function skipStudentIntro(){ go('studentAuth'); }
+function switchTab(btn, showId, hideId){
+  btn.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(showId).style.display='block';
+  document.getElementById(hideId).style.display='none';
+  clearAuthMessages();
+}
+function switchDashTab(btn, showId){
+  btn.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.parentElement.parentElement.querySelectorAll(':scope > div[id]').forEach(div=>{
+    div.style.display = (div.id===showId)?'block':'none';
+  });
+  if(showId==='dashStats') loadStatistics();
+  if(showId==='dashStatus') loadRequests('status');
+  if(showId==='dashRequests') loadRequests('requests');
+  if(showId==='admPending') loadPendingSupervisors();
+  if(showId==='admRules') loadAdmissionRulesForm();
+  if(showId==='admStartDate') loadStartDate();
+  if(showId==='admLocations') loadDeptLocations();
+  if(showId==='admQueue') loadQueueStatus();
+  if(showId==='admInquiries') loadInquiries();
+  if(showId==='admSystemGate') loadSystemGate();
+  if(showId==='admStats') loadAdminStats();
+  if(showId==='infoApp') loadInfoApp();
+  if(showId==='infoReg') loadInfoReg();
+  if(showId==='infoMails') loadInfoMails();
+  if(showId==='infoExplain') loadInfoExplain();
+}
+function logoutSupervisor(){ clearSession(); go('home'); }
+function logoutAdmin(){ clearSession(); go('home'); }
+
+/* ============================= طبقة الاتصال بالخادم + وضع عدم الاتصال ============================= */
+function updateOfflineBanner(){
+  document.getElementById('offlineBanner').style.display = navigator.onLine? 'none':'block';
+}
+window.addEventListener('online', ()=>{updateOfflineBanner(); syncOfflineQueue();});
+window.addEventListener('offline', updateOfflineBanner);
+updateOfflineBanner();
+
+function queueOffline(action, payload){
+  const q = JSON.parse(localStorage.getItem('offlineQueue')||'[]');
+  q.push({action,payload,ts:Date.now()});
+  localStorage.setItem('offlineQueue', JSON.stringify(q));
+}
+async function syncOfflineQueue(){
+  let q = JSON.parse(localStorage.getItem('offlineQueue')||'[]');
+  if(!q.length) return;
+  const remaining = [];
+  for(const item of q){
+    try{ await api(item.action, item.payload, true); }
+    catch(e){ remaining.push(item); }
+  }
+  localStorage.setItem('offlineQueue', JSON.stringify(remaining));
+  if(remaining.length !== q.length) toast('تمت مزامنة البيانات المحفوظة محلياً','ok');
+}
+
+async function fetchWithTimeout(url, opts, ms){
+  const controller = new AbortController();
+  const id = setTimeout(()=>controller.abort(), ms);
+  try{ return await fetch(url, Object.assign({}, opts, {signal:controller.signal})); }
+  finally{ clearTimeout(id); }
+}
+
+async function api(action, payload, noQueue){
+  if(!navigator.onLine){
+    if(!noQueue){ queueOffline(action, payload); }
+    return {ok:false, offline:true, error:'لا يوجد اتصال بالإنترنت، تم حفظ العملية محلياً وستُرسل عند توفر الاتصال.'};
+  }
+  if(!CONFIG.GAS_URL || CONFIG.GAS_URL.indexOf('PASTE_YOUR')===0){
+    return {ok:false, error:'لم يتم ضبط رابط السكريبت (GAS_URL) بعد. راجع مسؤول النظام.'};
+  }
+  const body = Object.assign({action, token: state.token}, payload);
+  const delays = [500, 1200, 2200]; // محاولات إضافية بفواصل متزايدة تلائم ازدحام الخادم عند استخدام كثيف
+  // رسائل الخادم التي تعني "مؤقت، أعد المحاولة" وليست خطأ حقيقياً بالبيانات — يُعاد المحاولة تلقائياً بصمت
+  // بدل إظهار فشل فوري للمستخدم (يفيد خصوصاً وقت ذروة التسجيل حين يتزاحم الطلاب على القفل بنفس اللحظة).
+  const TRANSIENT_ERROR_MARKERS = ['الخادم مشغول حالياً'];
+  let lastResult = null;
+  for(let attempt=0; attempt<=delays.length; attempt++){
+    try{
+      const res = await fetchWithTimeout(CONFIG.GAS_URL, {method:'POST', body: JSON.stringify(body)}, REQUEST_TIMEOUT_MS);
+      const r = await res.json();
+      if(r && r.authError){ clearSession(); toast('انتهت صلاحية الجلسة، الرجاء تسجيل الدخول مجدداً','err'); return r; }
+      const isTransient = r && r.ok===false && typeof r.error==='string' && TRANSIENT_ERROR_MARKERS.some(m=>r.error.indexOf(m)>-1);
+      if(!isTransient) return r;
+      lastResult = r;
+    }catch(e){
+      lastResult = {ok:false, error:'تعذر الاتصال بالخادم بسبب ازدحام الشبكة، الرجاء الانتظار قليلاً والمحاولة مجدداً'};
+    }
+    if(attempt<delays.length) await new Promise(r=>setTimeout(r, delays[attempt]));
+  }
+  return lastResult || {ok:false, error:'تعذر الاتصال بالخادم بسبب ازدحام الشبكة، الرجاء الانتظار قليلاً والمحاولة مجدداً'};
+}
+
+/* ============================= OTP ============================= */
+let otpContext = {};
+let otpCooldownTimer = null;
+function clearAuthMessages(){
+  ['msgStuAuth','msgSupAuth','msgAdminAuth','msgInquiry','msgGuarantor'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.innerHTML='';
+  });
+}
+async function sendOtpFlow(emailInputId, rowId, nextStep){
+  const email = val(emailInputId);
+  if(!email || email.indexOf('@')===-1){ toast('الرجاء إدخال بريد إلكتروني صحيح','err'); return; }
+  clearAuthMessages();
+  const row = document.getElementById(rowId);
+  row.innerHTML = '<button class="btn secondary" disabled><span class="spinner"></span> جارٍ الإرسال...</button>';
+  const r = await api('sendOtp',{email});
+  if(r.ok || r.offline){
+    otpContext = {email, nextStep, emailInputId, ticket:null};
+    row.innerHTML = `
+      <input id="otpCodeInput" placeholder="أدخل رمز التحقق OTP" inputmode="numeric" style="padding:11px;border-radius:10px;border:1.5px solid var(--line);font-family:var(--font)">
+      <button class="btn" onclick="confirmOtp()">تأكيد الرمز</button>
+      <button class="btn secondary" id="resendOtpBtn" disabled>إعادة الإرسال (60)</button>`;
+    startOtpCooldown(rowId, emailInputId, nextStep);
+  } else {
+    row.innerHTML = `<button class="btn secondary" onclick="sendOtpFlow('${emailInputId}','${rowId}','${nextStep}')">إعادة إرسال رمز التحقق</button>`;
+    toast(r.error||'تعذر إرسال الرمز','err');
+  }
+}
+function startOtpCooldown(rowId, emailInputId, nextStep){
+  let t = 60;
+  clearInterval(otpCooldownTimer);
+  otpCooldownTimer = setInterval(()=>{
+    t--;
+    const btn = document.getElementById('resendOtpBtn');
+    if(!btn){ clearInterval(otpCooldownTimer); return; }
+    if(t<=0){
+      clearInterval(otpCooldownTimer);
+      btn.disabled=false; btn.textContent='إعادة إرسال الرمز';
+      btn.onclick=()=>sendOtpFlow(emailInputId,rowId,nextStep);
+    } else { btn.textContent = `إعادة الإرسال (${t})`; }
+  },1000);
+}
+async function confirmOtp(){
+  const otp = val('otpCodeInput');
+  if(!otp){ toast('الرجاء إدخال الرمز','err'); return; }
+  const r = await api('verifyOtp',{email:otpContext.email, otp});
+  if(r.ok){
+    otpContext.ticket = r.otpTicket;
+    if(otpContext.nextStep==='studentOtpVerify') return afterStudentLoginByEmail();
+    if(otpContext.nextStep==='studentRegisterOtpVerify') return afterStudentRegisterVerified();
+    if(otpContext.nextStep==='supervisorOtpVerify') return supervisorLogin({email:otpContext.email, otpTicket:otpContext.ticket});
+  } else {
+    toast(r.error||'رمز غير صحيح','err');
+  }
+}
+async function afterStudentLoginByEmail(){
+  const r = await api('studentLogin',{email:otpContext.email, otpTicket:otpContext.ticket});
+  if(r.ok){
+    state.student = r.student; setSession(r.token,'student');
+    toast('تم تسجيل الدخول بنجاح','ok');
+    afterLogin(otpContext.email);
+  } else { showMsg('msgStuAuth', r.error||'تعذر الدخول','err'); }
+}
+async function afterStudentRegisterVerified(){
+  const name = val('regName'), phone = val('regPhone'), email = val('regEmail');
+  const r = await api('registerStudent',{name,phone,email, otpTicket:otpContext.ticket});
+  if(r.ok){
+    state.student = {'المعرف':r.id,'الاسم':name,'البريد الإلكتروني':email,'الهاتف':phone};
+    setSession(r.token,'student');
+    document.getElementById('credId').textContent = r.id;
+    document.getElementById('credCode').textContent = r.code;
+    document.getElementById('studentCredCard').style.display='block';
+    document.getElementById('qrcode').innerHTML='';
+    new QRCode(document.getElementById('qrcode'), {text:`ID:${r.id} CODE:${r.code}`, width:140, height:140});
+  } else { showMsg('msgStuAuth', r.error||'تعذر التسجيل','err'); }
+}
+function downloadCredScreenshot(){
+  const id = document.getElementById('credId').textContent;
+  const code = document.getElementById('credCode').textContent;
+  const qrCanvas = document.querySelector('#qrcode canvas');
+  const qrImg = document.querySelector('#qrcode img');
+  let qrDataUrl = '';
+  try{ qrDataUrl = qrCanvas ? qrCanvas.toDataURL('image/png') : (qrImg ? qrImg.src : ''); }catch(e){}
+
+  const w = window.open('', '_blank');
+  if(!w){ toast('الرجاء السماح بالنوافذ المنبثقة في المتصفح لتنزيل الملف','err'); return; }
+  w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+    <title>بيانات الدخول - ${escapeHtml(id)}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+      body{font-family:'Cairo',Tahoma,Arial,sans-serif;padding:50px 20px;text-align:center;color:#1c231f;margin:0}
+      .box{border:2px dashed #0b5940;border-radius:18px;padding:34px 26px;max-width:420px;margin:0 auto;background:#e9f4ef}
+      h1{color:#0b5940;font-size:16px;margin:0 0 4px}
+      h2{color:#0b5940;font-size:14px;margin:0 0 18px;font-weight:600}
+      p{margin:8px 0;font-size:14px}
+      .code{font-family:monospace;font-size:22px;font-weight:800;letter-spacing:2px;background:#fff;border:1px solid #e6e2d5;border-radius:10px;padding:10px 18px;display:inline-block;margin:6px 0}
+      img.qr{margin-top:16px}
+      p.small{color:#6d7770;font-size:11.5px;margin-top:18px;line-height:1.8}
+      @media print{ body{padding:0} }
+    </style></head><body>
+      <div class="box">
+        <h1>الجامعة التقنية الجنوبية</h1>
+        <h2>كلية البوليتكنك/القرنة - بيانات الدخول لنظام التقديم على الدراسة المسائية</h2>
+        <p>المعرف: <b>${escapeHtml(id)}</b></p>
+        <p>الرمز: <span class="code">${escapeHtml(code)}</span></p>
+        ${qrDataUrl?`<div><img class="qr" src="${qrDataUrl}" width="150" height="150"></div>`:''}
+        <p class="small">احتفظ بهذه البيانات في مكان آمن ولا تشاركها مع أي شخص.<br>لتنزيل هذه الصفحة كملف PDF: اختر "حفظ كـ PDF" (Save as PDF) من نافذة الطباعة.</p>
+      </div>
+      <script>window.onload=function(){ setTimeout(function(){ window.print(); }, 350); };<\/script>
+    </body></html>`);
+  w.document.close();
+}
+function proceedToForm(){
+  if(state.systemStatus && state.systemStatus.open === false){
+    toast(state.systemStatus.closedMessage || 'التقديم مغلق حالياً، الرجاء المحاولة لاحقاً','err');
+    return;
+  }
+  if(state.student){
+    document.getElementById('f_studentName').value = state.student['الاسم']||'';
+    document.getElementById('f_email').value = state.student['البريد الإلكتروني']||'';
+    document.getElementById('f_phone').value = state.student['الهاتف']||'';
+  }
+  buildFileGrid();
+  applyUnifiedBranchDropdown();
+  state.appIdempotencyKey = 'idem_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  go('studentForm'); showFormStep(1);
+}
+// يبني قائمة موحدة لفرع المِهني من كل الفروع التي أدخلها مسؤول النظام في ضوابط التقديم (لتوحيد صيغة الإدخال بدل النص الحر)
+async function applyUnifiedBranchDropdown(){
+  try{
+    const r = await api('getAdmissionRules',{});
+    if(!r.ok) return;
+    state.admissionRules = r.rules; // تُخزَّن لاستخدامها لاحقاً بالتحقق الفوري من الأهلية قبل إكمال الاستمارة
+    const branches = Array.from(new Set(r.rules.flatMap(x=>x.acceptedBranches))).filter(Boolean);
+    if(!branches.length) return; // لا توجد ضوابط بعد؛ يبقى حقل نصي حر كما كان
+    const wrap = document.getElementById('f_branch_wrap');
+    const current = val('f_branch');
+    wrap.innerHTML = `<label id="f_branch_label">فرع المِهني (إن وجد)</label>
+      <select id="f_branch"><option value="">-- لا يوجد --</option>${branches.map(b=>`<option ${b===current?'selected':''}>${escapeHtml(b)}</option>`).join('')}</select>`;
+    toggleBranchRequired();
+  }catch(e){}
+}
+// بعد تسجيل الدخول: إذا كان للطالب طلب سابق يُعرض حالته (ويُكمل التسجيل إن قُبل)، وإلا يذهب لتعبئة استمارة جديدة
+async function afterLogin(email){
+  const r = await api('getApplicationByEmail', {email});
+  if(!r.ok){ proceedToForm(); return; }
+  showStudentHome(r.application, email);
+}
+function showStudentHome(a, email){
+  go('studentHome');
+  const box = document.getElementById('studentHomeStatus');
+  box.innerHTML = `
+    <div class="card">
+      <h2>أهلاً ${escapeHtml(a['اسم الطالب الرباعي واللقب'])}</h2>
+      <table>
+        <tr><th>كود الطلب</th><td>${escapeHtml(a['كود الطلب'])}</td></tr>
+        <tr><th>حالة الطلب</th><td>${escapeHtml(a['الحالة'])}</td></tr>
+        <tr><th>ملاحظات</th><td>${escapeHtml(a['ملاحظات المشرف']||'-')}</td></tr>
+      </table>
+      ${a['رابط PDF']?`<div class="btn-row"><a class="btn accent dl" target="_blank" href="${a['رابط PDF']}">${DL_ICON}عرض استمارة التقديم PDF</a></div>`:''}
+    </div>`;
+  const regBox = document.getElementById('studentHomeRegPanel');
+  regBox.innerHTML = '';
+  if(String(a['الحالة']||'').indexOf('تم قبولكم')>-1){
+    if(a['رابط PDF التسجيل']){
+      regBox.innerHTML = `<div class="card"><div class="msg ok">تم استكمال استمارة التسجيل مسبقاً</div>
+        <div class="btn-row"><a class="btn accent dl" target="_blank" href="${a['رابط PDF التسجيل']}">${DL_ICON}عرض استمارة التسجيل PDF</a></div></div>`;
+    } else {
+      renderGuarantorForm(email, a['اسم الطالب الرباعي واللقب'], 'studentHomeRegPanel');
+    }
+  }
+}
+async function studentLoginById(){
+  const id = val('loginId'), code = val('loginCode');
+  if(!id||!code){ toast('الرجاء إدخال المعرف والرمز','err'); return; }
+  const r = await api('studentLogin',{id, code});
+  if(r.ok){
+    state.student = r.student; setSession(r.token,'student'); toast('تم تسجيل الدخول بنجاح','ok');
+    afterLogin(r.student['البريد الإلكتروني'] || id);
+  }
+  else showMsg('msgStuAuth', r.error||'بيانات الدخول غير صحيحة','err');
+}
+
+/* ============================= استمارة التقديم ============================= */
+function togglePrevExpelledBlock(){
+  const yes = val('f_prevExpelled')==='نعم';
+  document.getElementById('prevExpelledBlock').style.display = yes ? 'grid' : 'none';
+}
+function showFormStep(n){
+  document.querySelectorAll('.formStep').forEach(s=>s.style.display='none');
+  document.getElementById('fStep'+n).style.display='block';
+  document.querySelectorAll('#formStepper .step').forEach(s=>{
+    const step = Number(s.dataset.step);
+    s.classList.toggle('active', step===n);
+    s.classList.toggle('done', step<n);
+  });
+  document.getElementById('msgForm').innerHTML='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// يتحقق من اكتمال الخطوة الحالية بصحة قبل السماح بالانتقال للخطوة التالية
+// يميّز حقل "فرع المِهني" كإلزامي (بعلامة *) عندما يختار الطالب "مِهني" كنوع دراسة، ويعيده اختيارياً لغير ذلك
+function toggleBranchRequired(){
+  const label = document.getElementById('f_branch_label');
+  if(!label) return;
+  const isVocational = val('f_studyType')==='مِهني';
+  label.innerHTML = isVocational ? 'فرع المِهني <span style="color:var(--danger)">*</span>' : 'فرع المِهني (إن وجد)';
+}
+function validateStep(n){
+  if(n===1){
+    if(!val('f_studentName')) return 'الرجاء إدخال اسم الطالب الرباعي واللقب';
+    if(!/^\d{12}$/.test(val('f_nationalId'))) return 'رقم البطاقة الموحدة يجب أن يتكون من 12 رقماً بالضبط';
+    if(!val('f_birthDate')) return 'الرجاء إدخال تاريخ التولد';
+    if(!isAgeAtLeast17(val('f_birthDate'))) return 'يجب ألا يقل عمر المتقدم عن 17 سنة';
+    if(!val('f_motherName')) return 'الرجاء إدخال اسم الأم الثلاثي';
+    if(!val('f_address')) return 'الرجاء إدخال السكن';
+    if(!/^0?7\d{9}$/.test(val('f_phone').replace(/[\s-]/g,''))) return 'رقم الهاتف غير صحيح';
+    if(!val('f_email') || val('f_email').indexOf('@')===-1) return 'البريد الإلكتروني غير صحيح';
+    return null;
+  }
+  if(n===2){
+    if(!val('f_studyType')) return 'الرجاء اختيار نوع الدراسة';
+    if(val('f_studyType')==='مِهني' && !val('f_branch')) return 'أدخل فرع المِهني';
+    if(!val('f_examNumber')) return 'الرجاء إدخال الرقم الامتحاني';
+    if(!val('f_schoolName')) return 'الرجاء إدخال اسم المدرسة';
+    if(!val('f_gradYear')) return 'الرجاء إدخال سنة التخرج من الإعدادية';
+    if(!val('f_successRound')) return 'الرجاء اختيار دور النجاح';
+    if(!val('f_lessonsCount')) return 'الرجاء إدخال عدد الدروس';
+    if(!val('f_totalScore')) return 'الرجاء إدخال مجموع الدرجات المثبت في وثيقة او تأييد التخرج';
+    if(!val('f_average')) return 'الرجاء إدخال المعدل';
+    return null;
+  }
+  if(n===3){
+    if(!val('f_prevExpelled')) return 'الرجاء الإجابة عن سؤال ترقين القيد';
+    if(val('f_prevExpelled')==='نعم'){
+      if(!val('f_prevExpelledYear')) return 'الرجاء إدخال سنة الترقين';
+      if(!val('f_prevCollege')) return 'الرجاء إدخال الكلية/المعهد';
+      if(!val('f_prevStudyType')) return 'الرجاء اختيار نوع الدراسة السابقة';
+    }
+    if(!document.getElementById('f_pledge').checked) return 'الرجاء الموافقة على إقرار التعهد للمتابعة';
+    return null;
+  }
+  if(n===4){
+    if(!val('f_choice1')) return 'الرجاء اختيار القسم الأول';
+    if(!val('f_choice2')) return 'الرجاء اختيار القسم الثاني';
+    return null;
+  }
+  return null;
+}
+// يتحقق إن كان الطالب مشمولاً بقسم واحد معيّن وفق ضوابط القبول (نفس منطق الخادم checkEligibility تماماً)
+// قاعدة فارغة كلياً (لا معدل ولا أنواع ولا فروع) = لم تُحدَّد ضوابط بعد لهذا القسم، فلا نمنع الطالب من المحاولة
+function isEligibleForDeptClient(rule, studyType, branch, average){
+  if(!rule) return true;
+  const hasAnyRule = (rule.minAverage||0) > 0 || (rule.acceptedTypes && rule.acceptedTypes.length) || (rule.acceptedBranches && rule.acceptedBranches.length);
+  if(!hasAnyRule) return true;
+  if(rule.minAverage && Number(average) < rule.minAverage) return false;
+  if(rule.acceptedTypes && rule.acceptedTypes.length && rule.acceptedTypes.indexOf(studyType)===-1) return false;
+  if(studyType==='مِهني' && rule.acceptedBranches && rule.acceptedBranches.length && rule.acceptedBranches.indexOf(String(branch||'').trim())===-1) return false;
+  return true;
+}
+// يمنع الطالب من متابعة التقديم مبكراً (بعد إدخال المعدل ونوع الدراسة مباشرة) إذا كان غير مشمول بأي من القسمين إطلاقاً،
+// بدل تركه يكمل كل خطوات الاستمارة ورفع كل المستندات دون فائدة — تخفيفاً للضغط على النظام
+async function tryNextStep(fromStep){
+  const err = validateStep(fromStep);
+  if(err){
+    // حالة خاصة: اختار "مِهني" ولم يُدخل فرع المِهني — تنبيه بالمرة الأولى، وحظر كلي بالمحاولة الثانية بلا فرع
+    if(fromStep===2 && err==='أدخل فرع المِهني'){
+      state.branchMissingAttempts++;
+      if(state.branchMissingAttempts >= 2){
+        showBlockedScreen('تعذّر المتابعة', 'لم يتم اختيار فرع الدراسة المِهني.', 'لم تقم باختيار فرع الدراسة المِهني رغم التنبيه السابق. تم إنهاء هذه الجلسة، ويمكنك إغلاق هذه الصفحة الآن.');
+        return;
+      }
+    }
+    showMsg('msgForm', err, 'err'); return;
+  }
+  state.branchMissingAttempts = 0;
+  if(fromStep===2){
+    let rules = state.admissionRules;
+    if(!rules){
+      try{ const r = await api('getAdmissionRules',{}); if(r.ok){ rules = r.rules; state.admissionRules = r.rules; } }catch(e){}
+    }
+    if(rules && rules.length){
+      const studyType = val('f_studyType'), branch = val('f_branch'), average = val('f_average');
+      const eligibleForAny = rules.some(r=>isEligibleForDeptClient(r, studyType, branch, average));
+      if(!eligibleForAny){ showBlockedScreen(); return; }
+    }
+  }
+  showFormStep(fromStep+1);
+}
+
+function updateUploadProgress(){
+  const done = FILE_FIELDS.filter(f=>state.uploadedFiles[f]).length;
+  const total = FILE_FIELDS.length;
+  document.getElementById('uploadProgressBar').style.width = Math.round(done/total*100)+'%';
+  document.getElementById('uploadProgressText').textContent = done+' من '+total+' مستندات مرفوعة';
+  const btn = document.getElementById('submitAppBtn');
+  if(done>=total){ btn.disabled=false; btn.textContent='إرسال الطلب'; }
+  else { btn.disabled=true; btn.textContent='أكمل رفع كل المستندات لإرسال الطلب ('+done+'/'+total+')'; }
+}
+function buildFileGrid(){
+  const grid = document.getElementById('fileGrid');
+  grid.innerHTML='';
+  state.uploadedFiles = {};
+  FILE_FIELDS.forEach(field=>{
+    const div = document.createElement('div');
+    div.className='file-item';
+    const safeId = 'fitem_'+btoa(unescape(encodeURIComponent(field))).replace(/[^a-zA-Z0-9]/g,'');
+    div.id = safeId;
+    div.innerHTML = `<b>${escapeHtml(field)}</b>
+      <input type="file" accept="image/*" onchange="handleFileUpload(this,'${field.replace(/'/g,"\\'")}')">
+      <div class="bar"><i></i></div>
+      <div class="small" id="status_${safeId}">لم يتم الرفع بعد</div>`;
+    grid.appendChild(div);
+  });
+  // بند اختياري: رمز QR الخاص بالوثيقة الدراسية (يُرفق فقط إن كان موجوداً فعلياً على الوثيقة الأصلية)
+  const qrDiv = document.createElement('div');
+  qrDiv.className='file-item';
+  const qrSafeId = 'fitem_'+btoa(unescape(encodeURIComponent(QR_STUDY_DOC_FIELD))).replace(/[^a-zA-Z0-9]/g,'');
+  qrDiv.id = qrSafeId;
+  qrDiv.innerHTML = `<b>${escapeHtml(QR_STUDY_DOC_FIELD)} <span class="small" style="color:#888">(اختياري)</span></b>
+    <input type="file" accept="image/*" onchange="handleFileUpload(this,'${QR_STUDY_DOC_FIELD.replace(/'/g,"\\'")}')">
+    <div class="bar"><i></i></div>
+    <div class="small" id="status_${qrSafeId}">أرفق فقط إن وُجد رمز QR منفصل على الوثيقة</div>`;
+  grid.appendChild(qrDiv);
+  updateUploadProgress();
+}
+
+function compressImage(file, maxDim, quality){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let {width,height} = img;
+        if(width>height && width>maxDim){ height = height*maxDim/width; width=maxDim; }
+        else if(height>maxDim){ width = width*maxDim/height; height=maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width=width; canvas.height=height;
+        canvas.getContext('2d').drawImage(img,0,0,width,height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleFileUpload(input, fieldName){
+  const file = input.files[0];
+  if(!file) return;
+  const email = val('f_email') || (state.student && state.student['البريد الإلكتروني']) || '';
+  const name = val('f_studentName') || (state.student && state.student['الاسم']) || '';
+  if(!email){ toast('الرجاء إدخال البريد الإلكتروني في الخطوة الأولى قبل رفع الملفات','err'); showFormStep(1); return; }
+  const wrap = input.closest('.file-item');
+  const statusEl = wrap.querySelector('.small');
+  const bar = wrap.querySelector('.bar'); const fill = bar.querySelector('i');
+  bar.style.display='block'; fill.style.width='15%';
+  statusEl.textContent = 'جارٍ تحسين الصورة...';
+  try{
+    const dataUrl = await compressImage(file, 1600, 0.85);
+    fill.style.width='55%';
+    const base64 = dataUrl.split(',')[1];
+    statusEl.textContent = 'جارٍ الرفع...';
+    let r = await api('uploadFile', {email, name, fieldName, base64, mimeType:'image/jpeg', fileName: file.name});
+    if(!r.ok && !r.offline){ // إعادة محاولة واحدة تلقائية عند فشل الرفع
+      statusEl.textContent = 'إعادة المحاولة...';
+      r = await api('uploadFile', {email, name, fieldName, base64, mimeType:'image/jpeg', fileName: file.name});
+    }
+    fill.style.width='100%';
+    if(r.ok){
+      state.uploadedFiles[fieldName] = {name:fieldName, url:r.url, id:r.id, base64:base64, mimeType:'image/jpeg'};
+      wrap.classList.add('done');
+      statusEl.textContent = '✔ تم الرفع بنجاح';
+    } else {
+      delete state.uploadedFiles[fieldName];
+      wrap.classList.remove('done');
+      statusEl.textContent = '✕ '+(r.error||'فشل الرفع، حاول مجدداً');
+      fill.style.background = 'var(--danger)';
+    }
+  }catch(e){
+    delete state.uploadedFiles[fieldName];
+    statusEl.textContent = '✕ تعذر معالجة الصورة';
+  }
+  updateUploadProgress();
+}
+
+async function submitApplication(){
+  document.getElementById('msgForm').innerHTML='';
+  const f = {
+    studentName: val('f_studentName'), gender: val('f_gender'), nationalId: val('f_nationalId'),
+    birthDate: val('f_birthDate'), motherName: val('f_motherName'), address: val('f_address'),
+    phone: val('f_phone'), email: val('f_email'), studyType: val('f_studyType'), examNumber: val('f_examNumber'), schoolName: val('f_schoolName'), branch: val('f_branch'),
+    gradYear: val('f_gradYear'), successRound: val('f_successRound'), lessonsCount: val('f_lessonsCount'), totalScore: val('f_totalScore'),
+    average: val('f_average'),
+    prevExpelled: val('f_prevExpelled'), prevExpelledYear: val('f_prevExpelled')==='نعم'?val('f_prevExpelledYear'):'',
+    prevCollege: val('f_prevExpelled')==='نعم'?val('f_prevCollege'):'', prevStudyType: val('f_prevExpelled')==='نعم'?val('f_prevStudyType'):'',
+    choice1: val('f_choice1'), choice2: val('f_choice2'),
+    files: Object.values(state.uploadedFiles)
+  };
+  if(!f.studentName || !f.email || !f.phone){
+    showMsg('msgForm','الرجاء إكمال معلومات الطالب الأساسية (الاسم، الهاتف، البريد)','err');
+    showFormStep(1); return;
+  }
+  if(!/^\d{12}$/.test(f.nationalId)){
+    showMsg('msgForm','رقم البطاقة الموحدة يجب أن يتكون من 12 رقماً بالضبط','err');
+    showFormStep(1); return;
+  }
+  if(!isAgeAtLeast17(f.birthDate)){
+    showMsg('msgForm','يجب ألا يقل عمر المتقدم عن 17 سنة','err');
+    showFormStep(1); return;
+  }
+  if(!f.examNumber){
+    showMsg('msgForm','الرجاء إدخال الرقم الامتحاني','err');
+    showFormStep(2); return;
+  }
+  if(!document.getElementById('f_pledge').checked){
+    showMsg('msgForm','الرجاء الموافقة على إقرار التعهد','err');
+    showFormStep(3); return;
+  }
+  const missing = FILE_FIELDS.filter(name=>!state.uploadedFiles[name]);
+  if(missing.length){
+    showMsg('msgForm','الرجاء رفع جميع المستندات المطلوبة أولاً: '+missing.join('، '),'err');
+    showFormStep(5); return;
+  }
+  const btn = document.getElementById('submitAppBtn');
+  btn.disabled = true;
+  const stages = ['جارٍ التحقق من البيانات...','جارٍ إنشاء الاستمارة...','جارٍ حفظ الطلب...','جارٍ إرسال رسالة التأكيد...'];
+  let stageIdx = 0;
+  btn.innerHTML = '<span class="spinner"></span> '+stages[0];
+  const stageTimer = setInterval(()=>{
+    stageIdx = Math.min(stageIdx+1, stages.length-1);
+    btn.innerHTML = '<span class="spinner"></span> '+stages[stageIdx];
+  }, 900);
+  const r = await api('submitApplication', {form:f, idempotencyKey: state.appIdempotencyKey});
+  clearInterval(stageTimer);
+  btn.disabled = false; btn.textContent = 'إرسال الطلب';
+  if(r.ok || r.offline){
+    document.getElementById('appSuccessCard').style.display='block';
+    document.getElementById('appCode').textContent = r.code || '(سيُحفظ عند توفر الاتصال)';
+    const pdfLink = document.getElementById('appPdfLink');
+    if(r.pdfUrl){ pdfLink.href = r.pdfUrl; pdfLink.style.display='inline-block'; }
+    else pdfLink.style.display='none';
+    document.querySelectorAll('#screen-studentForm .card')[0].style.display='none';
+    document.getElementById('appSuccessCard').scrollIntoView({behavior:'smooth'});
+  } else if(r.ineligible){
+    go('ineligible');
+  } else {
+    showMsg('msgForm', r.error||'تعذر إرسال الطلب','err');
+  }
+}
+
+/* ============================= الاستعلامات (بكود الطلب أو البريد + تحقق OTP إلزامي) ============================= */
+let inquiryOtpContext = {};
+let inqOtpCooldownTimer = null;
+
+// الخطوة 1: المستخدم يُدخل كود الطلب أو بريده الإلكتروني، فيُرسَل رمز تحقق إلى البريد المرتبط بالطلب فعلياً
+async function startInquiryOtp(){
+  const query = val('inqQuery');
+  if(!query){ toast('الرجاء إدخال كود الطلب أو البريد الإلكتروني','err'); return; }
+  document.getElementById('inqResult').innerHTML = '';
+  document.getElementById('regFormPanel').innerHTML = '';
+  const row = document.getElementById('inqOtpRow');
+  row.innerHTML = '<button class="btn" disabled><span class="spinner"></span> جارٍ الإرسال...</button>';
+  const r = await api('requestStatusOtp',{query});
+  if(r.ok){
+    inquiryOtpContext = {query, email:r.email, ticket:null};
+    row.innerHTML = `
+      <input id="inqOtpCodeInput" placeholder="أدخل رمز التحقق OTP" inputmode="numeric" style="padding:11px;border-radius:10px;border:1.5px solid var(--line);font-family:var(--font)">
+      <button class="btn" onclick="confirmInquiryOtp()">تأكيد الرمز وعرض الحالة</button>
+      <button class="btn secondary" id="inqResendOtpBtn" disabled>إعادة الإرسال (60)</button>`;
+    toast('تم إرسال رمز التحقق إلى البريد المرتبط بالطلب (' + (r.maskedEmail||'') + ')','ok');
+    startInqOtpCooldown();
+  } else {
+    row.innerHTML = '<button class="btn" onclick="startInquiryOtp()">إرسال رمز التحقق</button>';
+    toast(r.error||'تعذر إرسال الرمز','err');
+  }
+}
+function startInqOtpCooldown(){
+  let t = 60;
+  clearInterval(inqOtpCooldownTimer);
+  inqOtpCooldownTimer = setInterval(()=>{
+    t--;
+    const btn = document.getElementById('inqResendOtpBtn');
+    if(!btn){ clearInterval(inqOtpCooldownTimer); return; }
+    if(t<=0){
+      clearInterval(inqOtpCooldownTimer);
+      btn.disabled=false; btn.textContent='إعادة إرسال الرمز';
+      btn.onclick=startInquiryOtp;
+    } else { btn.textContent = `إعادة الإرسال (${t})`; }
+  },1000);
+}
+// الخطوة 2: تأكيد رمز الـ OTP، ثم جلب حالة الطلب فعلياً بعد التحقق
+async function confirmInquiryOtp(){
+  const otp = val('inqOtpCodeInput');
+  if(!otp){ toast('الرجاء إدخال الرمز','err'); return; }
+  if(!inquiryOtpContext.email){ toast('الرجاء البدء من جديد','err'); return; }
+  const r = await api('verifyOtp',{email:inquiryOtpContext.email, otp});
+  if(r.ok){
+    inquiryOtpContext.ticket = r.otpTicket;
+    await doInquiry();
+  } else {
+    toast(r.error||'رمز غير صحيح','err');
+  }
+}
+async function doInquiry(){
+  const box = document.getElementById('inqResult');
+  const regBox = document.getElementById('regFormPanel');
+  box.innerHTML = '<span class="spinner"></span> جارٍ البحث...';
+  regBox.innerHTML = '';
+  const r = await api('getApplicationStatus',{query:inquiryOtpContext.query, email:inquiryOtpContext.email, otpTicket:inquiryOtpContext.ticket});
+  if(r.ok){
+    const a = r.application;
+    box.innerHTML = `
+      <table>
+        <tr><th>كود الطلب</th><td>${escapeHtml(a['كود الطلب'])}</td></tr>
+        <tr><th>اسم الطالب</th><td>${escapeHtml(a['اسم الطالب الرباعي واللقب'])}</td></tr>
+        <tr><th>حالة الطلب</th><td>${escapeHtml(a['الحالة'])}</td></tr>
+        <tr><th>ملاحظات</th><td>${escapeHtml(a['ملاحظات المشرف']||'-')}</td></tr>
+      </table>
+      ${a['رابط PDF']?`<div class="btn-row"><a class="btn accent dl" target="_blank" href="${a['رابط PDF']}">${DL_ICON}عرض استمارة التقديم PDF</a></div>`:''}
+    `;
+    if(String(a['الحالة']||'').indexOf('تم قبولكم')>-1){
+      if(a['رابط PDF التسجيل']){
+        regBox.innerHTML = `<div class="msg ok">تم استكمال استمارة التسجيل مسبقاً</div>
+          <div class="btn-row"><a class="btn accent dl" target="_blank" href="${a['رابط PDF التسجيل']}">${DL_ICON}عرض استمارة التسجيل PDF</a></div>`;
+      } else {
+        renderGuarantorForm(inquiryOtpContext.email, a['اسم الطالب الرباعي واللقب']);
+      }
+    }
+  } else {
+    box.innerHTML = `<div class="msg err">${escapeHtml(r.error||'تعذر العثور على الطلب')}</div>`;
+  }
+}
+
+function renderGuarantorForm(email, studentName, targetId){
+  targetId = targetId || 'regFormPanel';
+  guarantorTargetId = targetId;
+  const regBox = document.getElementById(targetId);
+  regBox.innerHTML = `
+    <div class="card" style="border-top:4px solid var(--accent)">
+      <h2>مبروك القبول! أكمل استمارة التسجيل ببيانات الكفيل</h2>
+      <div class="grid2">
+        <div class="field"><label>اسم الكفيل</label><input id="g_name"></div>
+        <div class="field"><label>رقم هاتف الكفيل</label><input id="g_phone" type="tel" placeholder="07xxxxxxxxx"></div>
+        <div class="field"><label>الحالة الوظيفية للكفيل</label>
+          <select id="g_status" onchange="onGuarantorStatusChange()">
+            <option value="">اختر...</option>
+            <option value="موظف">موظف</option>
+            <option value="متقاعد">متقاعد</option>
+          </select>
+        </div>
+        <div class="field" id="g_workplace_wrap" style="display:none"><label>مكان العمل</label><input id="g_workplace"></div>
+        <div class="field"><label>رقم الهوية</label><input id="g_id"></div>
+      </div>
+      <div class="upload-progress"><div class="bar-outer"><i id="gUploadBar"></i></div><span id="gUploadText">0 من 2 صور مرفوعة</span></div>
+      <div class="file-grid" id="gFileGrid"></div>
+      <div id="msgGuarantor"></div>
+      <div class="btn-row"><button class="btn" id="submitGuarantorBtn" onclick="submitGuarantorForm('${email.replace(/'/g,"\\'")}')" disabled>حدد الحالة الوظيفية أولاً</button></div>
+    </div>`;
+  guarantorFiles = {};
+  guarantorEmail = email; guarantorStudentName = studentName;
+  renderGuarantorFileGrid();
+  updateGuarantorProgress();
+}
+let guarantorTargetId = 'regFormPanel';
+let guarantorEmail = '', guarantorStudentName = '';
+
+const GUARANTOR_FILE_FIELDS = ['الهوية (وجه)', 'الهوية (ظهر)'];
+const GUARANTOR_WORK_CERT_FIELD = 'تأييد استمرارية بالدوام';
+// مستند اختياري: رمز QR مرافق لتأييد استمرارية الكفيل بالدوام (إن وُجد على الوثيقة الأصلية) — لا يدخل ضمن العدّاد الإلزامي
+const QR_WORK_CERT_FIELD = 'QR كود تأييد استمرارية الكفيل بالدوام';
+let guarantorFiles = {};
+
+function currentGuarantorRequiredFields(){
+  const status = val('g_status');
+  return status === 'موظف' ? GUARANTOR_FILE_FIELDS.concat([GUARANTOR_WORK_CERT_FIELD]) : GUARANTOR_FILE_FIELDS;
+}
+function onGuarantorStatusChange(){
+  const status = val('g_status');
+  document.getElementById('g_workplace_wrap').style.display = (status==='موظف') ? 'block' : 'none';
+  renderGuarantorFileGrid();
+  updateGuarantorProgress();
+}
+function renderGuarantorFileGrid(){
+  const grid = document.getElementById('gFileGrid');
+  if(!grid) return;
+  const fields = currentGuarantorRequiredFields();
+  let html = fields.map(field=>`
+    <div class="file-item" id="gitem_${btoa(unescape(encodeURIComponent(field))).replace(/[^a-zA-Z0-9]/g,'')}">
+      <b>${escapeHtml(field)}</b>
+      <input type="file" accept="image/*" onchange="handleGuarantorUpload(this,'${field.replace(/'/g,"\\'")}','${guarantorEmail.replace(/'/g,"\\'")}','${String(guarantorStudentName||'').replace(/'/g,"\\'")}')">
+      <div class="bar"><i></i></div>
+      <div class="small">${guarantorFiles[field] ? '✔ تم الرفع بنجاح' : 'لم يتم الرفع بعد'}</div>
+    </div>`).join('');
+  // بند اختياري: رمز QR الخاص بتأييد استمرارية الكفيل بالدوام (يظهر فقط عندما يكون الكفيل موظفاً)
+  if(val('g_status')==='موظف'){
+    html += `
+    <div class="file-item" id="gitem_${btoa(unescape(encodeURIComponent(QR_WORK_CERT_FIELD))).replace(/[^a-zA-Z0-9]/g,'')}">
+      <b>${escapeHtml(QR_WORK_CERT_FIELD)} <span class="small" style="color:#888">(اختياري)</span></b>
+      <input type="file" accept="image/*" onchange="handleGuarantorUpload(this,'${QR_WORK_CERT_FIELD.replace(/'/g,"\\'")}','${guarantorEmail.replace(/'/g,"\\'")}','${String(guarantorStudentName||'').replace(/'/g,"\\'")}')">
+      <div class="bar"><i></i></div>
+      <div class="small">${guarantorFiles[QR_WORK_CERT_FIELD] ? '✔ تم الرفع بنجاح' : 'أرفق فقط إن وُجد رمز QR منفصل على الوثيقة'}</div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+function updateGuarantorProgress(){
+  const status = val('g_status');
+  const btn = document.getElementById('submitGuarantorBtn');
+  if(!status){
+    document.getElementById('gUploadBar').style.width = '0%';
+    document.getElementById('gUploadText').textContent = 'حدد الحالة الوظيفية للكفيل أولاً';
+    btn.disabled = true; btn.textContent = 'حدد الحالة الوظيفية أولاً';
+    return;
+  }
+  const required = currentGuarantorRequiredFields();
+  const done = required.filter(f=>guarantorFiles[f]).length;
+  document.getElementById('gUploadBar').style.width = Math.round(done/required.length*100)+'%';
+  document.getElementById('gUploadText').textContent = done+' من '+required.length+' صور مرفوعة';
+  if(done>=required.length){ btn.disabled=false; btn.textContent='إرسال استمارة التسجيل'; }
+  else { btn.disabled=true; btn.textContent='أكمل رفع الصور المطلوبة لإرسال استمارة التسجيل ('+done+'/'+required.length+')'; }
+}
+async function handleGuarantorUpload(input, fieldName, email, studentName){
+  const file = input.files[0];
+  if(!file) return;
+  const wrap = input.closest('.file-item');
+  const statusEl = wrap.querySelector('.small');
+  const bar = wrap.querySelector('.bar'); const fill = bar.querySelector('i');
+  bar.style.display='block'; fill.style.width='50%';
+  statusEl.textContent = 'جارٍ الرفع...';
+  try{
+    const dataUrl = await compressImage(file, 1600, 0.85);
+    const base64 = dataUrl.split(',')[1];
+    const r = await api('uploadFile', {email, name:studentName, fieldName, base64, mimeType:'image/jpeg', fileName:file.name});
+    fill.style.width='100%';
+    if(r.ok){
+      guarantorFiles[fieldName] = {name:fieldName, url:r.url, id:r.id, base64:base64, mimeType:'image/jpeg'};
+      wrap.classList.add('done'); statusEl.textContent = '✔ تم الرفع بنجاح';
+    } else {
+      delete guarantorFiles[fieldName];
+      statusEl.textContent = '✕ '+(r.error||'فشل الرفع'); fill.style.background='var(--danger)';
+    }
+  }catch(e){ statusEl.textContent = '✕ تعذر معالجة الصورة'; }
+  updateGuarantorProgress();
+}
+async function submitGuarantorForm(email){
+  const guarantorName = val('g_name'), guarantorPhone = val('g_phone'), guarantorStatus = val('g_status'),
+        guarantorWorkplace = val('g_workplace'), guarantorId = val('g_id');
+  if(!guarantorName || !guarantorPhone || !guarantorStatus || !guarantorId){ showMsg('msgGuarantor','الرجاء تعبئة جميع بيانات الكفيل','err'); return; }
+  if(guarantorStatus==='موظف' && !guarantorWorkplace){ showMsg('msgGuarantor','الرجاء إدخال مكان عمل الكفيل','err'); return; }
+  const btn = document.getElementById('submitGuarantorBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> جارٍ الإرسال...';
+  const r = await api('submitGuarantorInfo',{email, guarantorName, guarantorPhone, guarantorStatus, guarantorWorkplace, guarantorId, files:Object.values(guarantorFiles)});
+  btn.disabled=false;
+  if(r.ok){
+    document.getElementById(guarantorTargetId).innerHTML = `<div class="card"><div class="msg ok">تم إرسال استمارة التسجيل بنجاح</div>
+      <div class="btn-row"><a class="btn accent dl" target="_blank" href="${r.pdfUrl}">${DL_ICON}عرض استمارة التسجيل PDF</a></div></div>`;
+    toast('تم إرسال استمارة التسجيل بنجاح','ok');
+  } else {
+    showMsg('msgGuarantor', r.error||'تعذر الإرسال','err');
+    btn.disabled=false; btn.textContent='إرسال استمارة التسجيل';
+  }
+}
+async function sendInquiryMsg(){
+  const name = val('inqName'), email = val('inqEmail2'), message = val('inqMsg');
+  if(!name||!email||!message){ showMsg('msgInquiry','الرجاء تعبئة جميع الحقول','err'); return; }
+  const r = await api('sendInquiry',{name,email,message});
+  showMsg('msgInquiry', r.msg||r.error, r.ok?'ok':'err');
+  if(r.ok){ document.getElementById('inqName').value=''; document.getElementById('inqEmail2').value=''; document.getElementById('inqMsg').value=''; }
+}
+
+/* ============================= المشرف ============================= */
+async function supervisorRegister(){
+  const name = val('supName'), role = val('supRole'), email = val('supEmail');
+  const r = await api('registerSupervisor',{name,role,email});
+  showMsg('msgSupAuth', r.msg||r.error, r.ok?'ok':'err');
+  if(r.ok){ document.getElementById('supName').value=''; document.getElementById('supEmail').value=''; }
+}
+async function supervisorLogin(otpArgs){
+  let payload;
+  if(otpArgs && otpArgs.email){
+    payload = {email:otpArgs.email, otpTicket:otpArgs.otpTicket};
+  } else {
+    const id = val('supId'), code = val('supCode');
+    if(!id||!code){ toast('الرجاء إدخال المعرف والرمز','err'); return; }
+    payload = {id, code};
+  }
+  const r = await api('supervisorLogin', payload);
+  if(r.ok){
+    state.supervisor = r.supervisor; setSession(r.token, r.supervisor['مستوى الصلاحية']==='admin' ? 'admin' : 'supervisor');
+    document.getElementById('supWelcome').textContent = 'أهلاً، '+r.supervisor['الاسم'];
+    document.getElementById('supRoleLabel').textContent = '('+r.supervisor['الصفة']+' - '+
+      (r.supervisor['مستوى الصلاحية']==='edit'?'صلاحية تعديل':r.supervisor['مستوى الصلاحية']==='admin'?'مسؤول النظام':'مشاهدة فقط')+')';
+    document.getElementById('btnGoAdmin').style.display = r.supervisor['الصفة']==='مسؤول النظام'?'inline-block':'none';
+    go('supervisorDash');
+    loadRequests('requests');
+  } else {
+    showMsg('msgSupAuth', r.error||'بيانات الدخول غير صحيحة','err');
+  }
+}
+
+async function loadRequests(mode){
+  function eligBadge(v){
+    if(v==='نعم') return '<span class="badge ok">مشمول</span>';
+    if(v==='لا') return '<span class="badge err">غير مشمول</span>';
+    return '<span class="badge warn">غير محدد</span>';
+  }
+  const DETAIL_FIELDS = [
+    ['التاريخ والوقت','تاريخ التقديم'], ['اسم الطالب الرباعي واللقب','اسم الطالب'], ['الجنس','الجنس'],
+    ['رقم البطاقة الموحدة','رقم البطاقة الموحدة'], ['تاريخ التولد','تاريخ التولد'], ['اسم الأم الثلاثي','اسم الأم الثلاثي'],
+    ['السكن','السكن'], ['رقم الهاتف','رقم الهاتف'], ['البريد الإلكتروني','البريد الإلكتروني'],
+    ['نوع الدراسة','نوع الدراسة'], ['الرقم الامتحاني','الرقم الامتحاني'], ['اسم المدرسة','اسم المدرسة'], ['فرع المهني','فرع المِهني'],
+    ['سنة التخرج','سنة التخرج من الإعدادية'], ['دور النجاح','دور النجاح'], ['عدد الدروس','عدد الدروس'],
+    ['مجموع الدرجات','مجموع الدرجات المثبت في وثيقة او تأييد التخرج'], ['المعدل','المعدل'],
+    ['هل تم ترقين القيد سابقاً','هل تم ترقين القيد سابقاً'], ['سنة الترقين','سنة الترقين'],
+    ['الكلية/المعهد السابق','الكلية/المعهد السابق'], ['الدراسة السابقة','الدراسة السابقة (صباحي/مسائي)'],
+    ['الاختيار الأول','الاختيار الأول'], ['الاختيار الثاني','الاختيار الثاني'],
+    ['الحالة','الحالة'], ['ملاحظات المشرف','ملاحظات المشرف'], ['القسم المقبول','القسم المقبول'],
+    ['مسجل بالكلية','مسجل بالكلية'], ['موزع نهائياً','موزع نهائياً'], ['مباشر الدراسة','مباشر الدراسة'],
+    ['اسم الكفيل','اسم الكفيل'], ['رقم هاتف الكفيل','رقم هاتف الكفيل'], ['الحالة الوظيفية للكفيل','الحالة الوظيفية للكفيل'],
+    ['مكان عمل الكفيل','مكان عمل الكفيل'], ['رقم هوية الكفيل','رقم هوية الكفيل']
+  ];
+  function detailsTable(a){
+    return '<table>' + DETAIL_FIELDS.map(([key,label])=>
+      `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(a[key]||'-')}</td></tr>`
+    ).join('') + '</table>';
+  }
+  const target = mode==='status' ? 'statusList' : 'requestsList';
+  const box = document.getElementById(target);
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+  const r = await api('listRequests',{});
+  const canEdit = state.role==='admin' || (state.supervisor && state.supervisor['مستوى الصلاحية']!=='view');
+  const isAdmin = state.role==='admin';
+  if(!r.ok){ box.innerHTML = `<div class="msg err">${escapeHtml(r.error||'تعذر تحميل الطلبات')}</div>`; return; }
+  if(!r.list.length){ box.innerHTML = '<p class="small">لا توجد طلبات حالياً</p>'; return; }
+  box.innerHTML = r.list.map(a=>{
+    const badgeClass = a['الحالة'] && a['الحالة'].indexOf('قبول')>-1 ? 'ok' : (a['الحالة']==='مرفوض'?'err':'warn');
+    const code = escapeHtml(a['كود الطلب']);
+    return `
+    <div class="req-card">
+      <div class="top">
+        <b>${escapeHtml(a['اسم الطالب الرباعي واللقب'])}</b>
+        <span class="badge ${badgeClass}">${escapeHtml(a['الحالة'])}</span>
+      </div>
+      <div class="meta">كود الطلب: ${code} | البريد: ${escapeHtml(a['البريد الإلكتروني'])} | الهاتف: ${escapeHtml(a['رقم الهاتف'])}<br>
+      الاختيار الأول: ${escapeHtml(a['الاختيار الأول']||'')} ${eligBadge(a['مشمول الاختيار الأول'])} | الاختيار الثاني: ${escapeHtml(a['الاختيار الثاني']||'')} ${eligBadge(a['مشمول الاختيار الثاني'])}</div>
+      <div class="small"><button class="link-btn" onclick="const d=document.getElementById('det_${code}'); d.style.display = d.style.display==='none'?'block':'none';">عرض كامل التفاصيل ▾</button></div>
+      <div id="det_${code}" style="display:none;margin-top:8px">${detailsTable(a)}</div>
+      <div class="small" style="display:flex;gap:12px;flex-wrap:wrap">
+        ${a['رابط PDF']?`<a class="btn accent dl" href="${a['رابط PDF']}" target="_blank">${DL_ICON}عرض استمارة التقديم PDF</a>`:''}
+        ${a['رابط PDF التسجيل']?`<a class="btn accent dl" href="${a['رابط PDF التسجيل']}" target="_blank">${DL_ICON}عرض استمارة التسجيل PDF</a>`:''}
+      </div>
+      ${mode==='requests' && canEdit ? `
+      <div class="btn-row">
+        <button class="btn accent" onclick="decide('${code}','قبول_تقديم')">قبول التقديم</button>
+        <button class="btn secondary" onclick="decide('${code}','نقص')">طلب استكمال</button>
+        <button class="btn danger" onclick="decide('${code}','رفض')">رفض</button>
+      </div>
+      <div class="btn-row">
+        <select id="dept_${code}">
+          <option>قسم تقنيات هندسة الحاسوب والذكاء الاصطناعي</option>
+          <option>قسم تقنيات الهندسة الكهربائية</option>
+        </select>
+        <input id="note_${code}" placeholder="ملاحظات (سبب الرفض / النواقص)" style="flex:1;min-width:160px;padding:9px;border-radius:8px;border:1.5px solid var(--line);font-family:var(--font)">
+        <button class="btn" onclick="decide('${code}','قبول')">قبول التسجيل (تخصيص قسم)</button>
+      </div>
+      ${String(a['الحالة']||'').indexOf('تم قبولكم')>-1 && String(a['الحالة']||'').indexOf('تم تسجيلكم نهائياً')===-1 ? `
+      <div class="btn-row"><button class="btn accent" onclick="completeRegistration('${code}')">إكمال التسجيل (تحديد موعد المباشرة)</button></div>` : ''}` : ''}
+      ${isAdmin ? `<div class="btn-row"><button class="btn danger" onclick="deleteApp('${code}')">حذف الطلب نهائياً</button></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function completeRegistration(code){
+  if(!confirm('سيتم إرسال رسالة إكمال التسجيل للطالب بموعد المباشرة وموقع القسم. متابعة؟')) return;
+  const r = await api('completeRegistration',{code});
+  if(r.ok){ toast('تم إرسال رسالة إكمال التسجيل بنجاح','ok'); loadRequests('requests'); loadRequests('status'); }
+  else toast(r.error||'تعذر تنفيذ الإجراء','err');
+}
+async function deleteApp(code){
+  if(!confirm('هل أنت متأكد من حذف الطلب رقم '+code+' نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+  const r = await api('deleteApplication',{code});
+  if(r.ok){ toast('تم حذف الطلب رقم '+code,'ok'); loadRequests('requests'); loadRequests('status'); } else toast(r.error||'تعذر الحذف','err');
+}
+
+async function decide(code, decision){
+  const note = document.getElementById('note_'+code) ? document.getElementById('note_'+code).value : '';
+  const deptSel = document.getElementById('dept_'+code);
+  const department = deptSel ? deptSel.value : '';
+  const r = await api('decideRequest',{code, decision, note, department});
+  if(r.ok){ toast('تم إرسال القرار بنجاح لطلب رقم '+code,'ok'); loadRequests('requests'); } else { toast(r.error||'تعذر تنفيذ الإجراء','err'); }
+}
+
+async function loadStatistics(){
+  const box = document.getElementById('statsBox');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const r = await api('getStatistics',{});
+  if(!r.ok){ box.innerHTML = `<div class="msg err">${escapeHtml(r.error)}</div>`; return; }
+  const s = r.stat;
+  let deptRows = s.byDept.map(d=>`<tr><td>${escapeHtml(d.label)}</td><td>${d.total}</td></tr>`).join('');
+  let typeRows = s.byStudyType.map(t=>`<tr><td>${escapeHtml(t.label)}</td><td>${t.total}</td></tr>`).join('');
+  box.innerHTML = `
+    <table>
+      <tr><th>نوع الإحصائية</th><th>المجموع</th><th>ذكور</th><th>إناث</th></tr>
+      <tr><td>إعداد الطلبة</td><td>${s.allStudents.total}</td><td>${s.allStudents.male}</td><td>${s.allStudents.female}</td></tr>
+      <tr><td>إعداد الطلبة المقبولين نهائياً</td><td>${s.acceptedFinalDistributed.total}</td><td>-</td><td>-</td></tr>
+    </table>
+    <h3 style="margin-top:18px;color:var(--primary-dark)">حسب القسم</h3>
+    <table><tr><th>القسم</th><th>العدد</th></tr>${deptRows}</table>
+    <h3 style="margin-top:18px;color:var(--primary-dark)">حسب نوع الدراسة</h3>
+    <table><tr><th>النوع</th><th>العدد</th></tr>${typeRows}</table>
+  `;
+}
+
+/* ============================= الإدارة ============================= */
+async function adminLogin(){
+  const id = val('adminId'), code = val('adminCode');
+  if(!id||!code){ toast('الرجاء إدخال المعرف والرمز','err'); return; }
+  const r = await api('adminLogin',{id,code});
+  if(r.ok){
+    state.isAdmin=true; setSession(r.token,'admin'); go('adminPanel');
+    if(r.mustChangeCode){
+      document.getElementById('tabAdmSecurity').click();
+      showMsg('msgSecurity','هذا حساب مؤقت — يجب تغيير بيانات الدخول الآن قبل استخدام باقي أقسام النظام.','err');
+      toast('الرجاء تغيير بيانات دخول الإدارة الآن','err');
+    } else {
+      loadPendingSupervisors();
+    }
+  }
+  else showMsg('msgAdminAuth', r.error||'بيانات الدخول غير صحيحة','err');
+}
+async function loadStartDate(){
+  const r = await api('getSettings',{});
+  if(r.ok && r.settings['startDate']) document.getElementById('startDateInput').value = r.settings['startDate'];
+}
+async function saveStartDate(){
+  const startDate = val('startDateInput');
+  if(!startDate){ showMsg('msgStartDate','الرجاء اختيار التاريخ','err'); return; }
+  const r = await api('updateSettings',{settings:{startDate}});
+  showMsg('msgStartDate', r.ok?'تم حفظ التاريخ بنجاح':(r.error||'تعذر الحفظ'), r.ok?'ok':'err');
+}
+async function loadDeptLocations(){
+  const box = document.getElementById('deptLocationsBox');
+  box.innerHTML = '<div class="skel"></div>';
+  const r = await api('getSettings',{});
+  const settings = r.ok ? r.settings : {};
+  box.innerHTML = DEPARTMENTS.map((dept, idx)=>`
+    <div class="field"><label>${escapeHtml(dept)}</label>
+      <input id="deptLoc_${idx}" value="${escapeHtml(settings['deptLocation_'+dept]||'')}" placeholder="مثال: الطابق الثاني - المبنى أ">
+    </div>`).join('');
+}
+async function saveDeptLocations(){
+  const settings = {};
+  DEPARTMENTS.forEach((dept, idx)=>{ settings['deptLocation_'+dept] = val('deptLoc_'+idx); });
+  const r = await api('updateSettings',{settings});
+  showMsg('msgLocations', r.ok?'تم حفظ المواقع بنجاح':(r.error||'تعذر الحفظ'), r.ok?'ok':'err');
+}
+/* ============================= التنبيه العام + إغلاق/فتح النظام ============================= */
+async function loadSystemGate(){
+  const r = await api('getSettings',{});
+  const s = r.ok ? r.settings : {};
+  document.getElementById('annEnabled').value = s.announcementEnabled === 'yes' ? 'yes' : 'no';
+  document.getElementById('annText').value = s.announcementText || '';
+  document.getElementById('sysManualClosed').value = s.systemManualClosed === 'yes' ? 'yes' : 'no';
+  document.getElementById('sysOpenAt').value = s.systemOpenAt || '';
+  document.getElementById('sysCloseAt').value = s.systemCloseAt || '';
+  document.getElementById('sysDailyEnabled').value = s.systemDailyHoursEnabled === 'yes' ? 'yes' : 'no';
+  document.getElementById('sysDailyOpen').value = s.systemDailyOpenTime || '';
+  document.getElementById('sysDailyClose').value = s.systemDailyCloseTime || '';
+  document.getElementById('sysClosedMsg').value = s.systemClosedMessage || '';
+  toggleDailyHoursFields();
+}
+function toggleDailyHoursFields(){
+  document.getElementById('dailyHoursFields').style.display = val('sysDailyEnabled')==='yes' ? 'grid' : 'none';
+}
+async function saveAnnouncement(){
+  const settings = { announcementEnabled: val('annEnabled'), announcementText: val('annText') };
+  const r = await api('updateSettings',{settings});
+  showMsg('msgAnnouncement', r.ok?'تم حفظ التنبيه بنجاح':(r.error||'تعذر الحفظ'), r.ok?'ok':'err');
+  if(r.ok){ toast('تم حفظ التنبيه','ok'); loadSystemStatus(); }
+}
+async function saveSystemGate(){
+  const dailyEnabled = val('sysDailyEnabled');
+  if(dailyEnabled==='yes' && (!val('sysDailyOpen') || !val('sysDailyClose'))){
+    showMsg('msgSystemGate','الرجاء تحديد وقتي الفتح والإغلاق اليوميين','err'); return;
+  }
+  const settings = {
+    systemManualClosed: val('sysManualClosed'),
+    systemOpenAt: val('sysOpenAt'),
+    systemCloseAt: val('sysCloseAt'),
+    systemDailyHoursEnabled: dailyEnabled,
+    systemDailyOpenTime: val('sysDailyOpen'),
+    systemDailyCloseTime: val('sysDailyClose'),
+    systemClosedMessage: val('sysClosedMsg')
+  };
+  const r = await api('updateSettings',{settings});
+  showMsg('msgSystemGate', r.ok?'تم حفظ الإعدادات بنجاح':(r.error||'تعذر الحفظ'), r.ok?'ok':'err');
+  if(r.ok){ toast('تم حفظ إعدادات الإغلاق/الفتح','ok'); loadSystemStatus(); }
+}
+async function loadAdmissionRulesForm(){
+  const box = document.getElementById('rulesFormBox');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const r = await api('getAdmissionRules',{});
+  if(!r.ok){ box.innerHTML = `<div class="msg err">${escapeHtml(r.error||'تعذر التحميل')}</div>`; return; }
+  box.innerHTML = r.rules.map((rule, idx)=>`
+    <div class="card" style="margin-bottom:12px">
+      <h2 style="font-size:15px;margin:0 0 10px">${escapeHtml(rule.department)}</h2>
+      <div class="field"><label>الحد الأدنى للمعدل (اتركه 0 لعدم الاشتراط)</label>
+        <input type="number" step="0.01" id="rule_avg_${idx}" value="${rule.minAverage||0}">
+      </div>
+      <div class="field"><label>أنواع الدراسة المقبولة</label>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          ${STUDY_TYPES.map(t=>`<label style="display:flex;align-items:center;gap:6px;font-size:13.5px">
+            <input type="checkbox" id="rule_type_${idx}_${t}" ${rule.acceptedTypes.indexOf(t)>-1?'checked':''}> ${escapeHtml(t)}
+          </label>`).join('')}
+        </div>
+      </div>
+      <div class="field"><label>الفروع المِهنية المقبولة (مفصولة بفاصلة، تُستخدم فقط إذا كان "مِهني" ضمن الأنواع المقبولة)</label>
+        <input id="rule_branches_${idx}" value="${escapeHtml(rule.acceptedBranches.join(', '))}" placeholder="مثال: فرع الحاسوب، فرع الكهرباء">
+      </div>
+    </div>`).join('');
+}
+// يعبّئ نموذج ضوابط التقديم بالقيم المطلوبة (معدل 55 لكلا القسمين + الأنواع والفروع المحددة) دون حفظها تلقائياً،
+// ليراجعها مسؤول النظام ثم يضغط "حفظ ضوابط التقديم" لتفعيلها فعلياً
+function fillDefaultAdmissionRules(){
+  DEFAULT_ADMISSION_RULES.forEach((rule, idx)=>{
+    const avgEl = document.getElementById('rule_avg_'+idx);
+    if(avgEl) avgEl.value = rule.minAverage;
+    STUDY_TYPES.forEach(t=>{
+      const cb = document.getElementById('rule_type_'+idx+'_'+t);
+      if(cb) cb.checked = rule.acceptedTypes.indexOf(t)>-1;
+    });
+    const branchesEl = document.getElementById('rule_branches_'+idx);
+    if(branchesEl) branchesEl.value = rule.acceptedBranches.join(', ');
+  });
+  showMsg('msgRules','تمت تعبئة القيم المطلوبة — راجعها ثم اضغط "حفظ ضوابط التقديم" لتفعيلها.','info');
+}
+async function saveAdmissionRules(){
+  const rules = DEPARTMENTS.map((dept, idx)=>({
+    department: dept,
+    minAverage: Number(val('rule_avg_'+idx))||0,
+    acceptedTypes: STUDY_TYPES.filter(t=>document.getElementById('rule_type_'+idx+'_'+t).checked),
+    acceptedBranches: val('rule_branches_'+idx).split(',').map(s=>s.trim()).filter(Boolean)
+  }));
+  const r = await api('updateAdmissionRules',{rules});
+  showMsg('msgRules', r.ok?'تم حفظ ضوابط التقديم بنجاح':(r.error||'تعذر الحفظ'), r.ok?'ok':'err');
+  if(r.ok) toast('تم حفظ ضوابط التقديم','ok');
+}
+async function loadPendingSupervisors(){
+  const box = document.getElementById('pendingSupList');
+  box.innerHTML = '<div class="skel"></div>';
+  const r = await api('listAllSupervisors',{});
+  if(!r.ok){ box.innerHTML=`<div class="msg err">${escapeHtml(r.error)}</div>`; return; }
+  if(!r.list.length){ box.innerHTML='<p class="small">لا يوجد مشرفون مسجلون بعد</p>'; return; }
+  box.innerHTML = r.list.map(s=>{
+    const id = escapeHtml(s['المعرف']);
+    const nameEsc = escapeHtml(s['الاسم']).replace(/'/g,"\\'");
+    const status = s['الحالة'];
+    const isSysAdmin = s['الصفة'] === 'مسؤول النظام';
+    const perm = s['مستوى الصلاحية'];
+    let badge, actions;
+    if(status === 'بانتظار الموافقة'){
+      badge = '<span class="badge warn">بانتظار الموافقة</span>';
+      actions = `
+        <button class="btn" onclick="approveSup('${id}',true)">موافقة</button>
+        <button class="btn danger" onclick="approveSup('${id}',false)">رفض</button>`;
+    } else {
+      badge = status === 'مفعل' ? '<span class="badge ok">مفعل</span>' : '<span class="badge err">مرفوض</span>';
+      const permControl = isSysAdmin
+        ? `<span class="badge">صلاحية كاملة (مسؤول النظام)</span>`
+        : `<select id="permSel_${id}" onchange="changeSupPerm('${id}')" style="padding:8px;border-radius:8px;border:1.5px solid var(--line);font-family:var(--font)">
+             <option value="view" ${perm==='view'?'selected':''}>مشاهدة فقط</option>
+             <option value="edit" ${perm==='edit'?'selected':''}>تعديل</option>
+           </select>`;
+      actions = `${permControl}<button class="btn danger" onclick="deleteSup('${id}','${nameEsc}')">حذف</button>`;
+    }
+    return `
+    <div class="req-card">
+      <div class="top"><b>${escapeHtml(s['الاسم'])}</b>${badge}</div>
+      <div class="meta">الصفة: ${escapeHtml(s['الصفة'])} | البريد: ${escapeHtml(s['البريد الإلكتروني'])} | المعرف: ${id}</div>
+      <div class="btn-row">${actions}</div>
+    </div>`;
+  }).join('');
+}
+async function approveSup(id, approve){
+  const r = await api('approveSupervisor',{id,approve});
+  if(r.ok){ toast('تم إرسال '+(approve?'الموافقة':'الرفض')+' للمشرف رقم '+id,'ok'); loadPendingSupervisors(); } else toast(r.error,'err');
+}
+async function changeSupPerm(id){
+  const sel = document.getElementById('permSel_'+id);
+  const perm = sel.value;
+  const r = await api('updateSupervisorPermission',{id, perm});
+  if(r.ok){ toast('تم تحديث صلاحية المشرف','ok'); } else { toast(r.error||'تعذر تحديث الصلاحية','err'); loadPendingSupervisors(); }
+}
+async function deleteSup(id, name){
+  if(!confirm('هل أنت متأكد من حذف المشرف "'+name+'" نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+  const r = await api('deleteSupervisor',{id});
+  if(r.ok){ toast('تم حذف المشرف','ok'); loadPendingSupervisors(); } else toast(r.error||'تعذر الحذف','err');
+}
+async function loadInquiries(){
+  const box = document.getElementById('inquiriesList');
+  box.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  const r = await api('listInquiries',{});
+  if(!r.ok){ box.innerHTML = `<div class="msg err">${escapeHtml(r.error||'تعذر التحميل')}</div>`; return; }
+  if(!r.list.length){ box.innerHTML = '<p class="small">لا توجد استفسارات حالياً</p>'; return; }
+  box.innerHTML = r.list.map(q=>{
+    const answered = q['تم الرد']==='نعم';
+    return `
+    <div class="req-card">
+      <div class="top">
+        <b>${escapeHtml(q['الاسم'])}</b>
+        <span class="badge ${answered?'ok':'warn'}">${answered?'تم الرد':'بانتظار الرد'}</span>
+      </div>
+      <div class="meta">البريد: ${escapeHtml(q['البريد الإلكتروني'])} | التاريخ: ${escapeHtml(q['التاريخ'])}</div>
+      <p class="small" style="margin:8px 0;color:var(--text)">${escapeHtml(q['المشكلة'])}</p>
+      ${answered?'':`
+      <textarea id="reply_${q['_row']}" rows="2" placeholder="اكتب الرد هنا..." style="width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--line);font-family:var(--font)"></textarea>
+      <div class="btn-row"><button class="btn" onclick="sendInquiryReply(${q['_row']})">إرسال الرد بالبريد</button></div>
+      `}
+    </div>`;
+  }).join('');
+}
+async function sendInquiryReply(row){
+  const reply = val('reply_'+row);
+  if(!reply){ toast('الرجاء كتابة نص الرد','err'); return; }
+  const r = await api('replyInquiry',{row, reply});
+  if(r.ok){ toast('تم إرسال الرد بنجاح','ok'); loadInquiries(); } else toast(r.error||'تعذر إرسال الرد','err');
+}
+function openSystemInfo(){ go('systemInfo'); loadInfoApp(); }
+async function downloadStudentDataExcel(btn){
+  const original = btn.textContent;
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> جارٍ التجهيز...';
+  const r = await api('exportStudentDataExcel',{});
+  btn.disabled = false; btn.textContent = original;
+  if(r.ok) window.open(r.url, '_blank');
+  else toast(r.error||'تعذر تجهيز الملف','err');
+}
+function loadInfoApp(){
+  const fields = [
+    'اسم الطالب الرباعي واللقب','الجنس','رقم البطاقة الموحدة (12 رقماً)','تاريخ التولد (17 سنة فأكثر)',
+    'اسم الأم الثلاثي','السكن (محافظة/قضاء/ناحية)','رقم الهاتف','البريد الإلكتروني',
+    'نوع الدراسة (علمي/تطبيقي/احيائي/مِهني)','الرقم الامتحاني','اسم المدرسة','فرع المِهني (إن وجد)',
+    'سنة التخرج من الإعدادية','دور النجاح','عدد الدروس','مجموع الدرجات المثبت في وثيقة او تأييد التخرج','المعدل',
+    'هل تم ترقين قيدك سابقاً (نعم/لا) - وعند الجواب بنعم: سنة الترقين، الكلية/المعهد، الدراسة (صباحي/مسائي)',
+    'إقرار وتعهد بصحة المعلومات وعدم الترقين بسبب الغش أو عقوبة انضباطية',
+    'الاختيار الأول','الاختيار الثاني',
+    'المستندات (9 صور إلزامية): بطاقة السكن وجه/ظهر، البطاقة الموحدة وجه/ظهر، البطاقة الموحدة للأب وجه/ظهر، البطاقة الموحدة للأم وجه/ظهر، الوثيقة الدراسية/تأييد بالدرجات',
+    'رمز QR الخاص بالوثيقة الدراسية (اختياري: يُرفق فقط إذا كانت الوثيقة الأصلية تحتوي على رمز QR منفصل، ويُطبع في صفحة مستقلة بالاستمارة)'
+  ];
+  document.getElementById('infoAppBox').innerHTML = `
+    <p class="small">هذه استمارة التقديم الأولي التي يملؤها الطالب إلكترونياً، وتُولَّد منها استمارة PDF رسمية بشعار الكلية تحتوي كل الحقول أدناه، بالإضافة إلى المستندات المرفوعة بحجم بطاقة هوية حقيقي.</p>
+    <table>${fields.map(f=>`<tr><td>${escapeHtml(f)}</td></tr>`).join('')}</table>`;
+}
+function loadInfoReg(){
+  const fields = [
+    'كل حقول استمارة التقديم أعلاه (تُنسخ تلقائياً)','القسم المقبول به الطالب فعلياً (وليس اختياره الأولي)',
+    'اسم الكفيل','رقم هاتف الكفيل','الحالة الوظيفية للكفيل (موظف / متقاعد)','مكان عمل الكفيل (تظهر فقط إذا كان موظفاً)',
+    'رقم هوية الكفيل','صورتا هوية الكفيل (وجه/ظهر)','تأييد استمرارية بالدوام (يُطلب فقط إذا كان الكفيل موظفاً، وغير مطلوب للمتقاعد، ويُطبع في صفحة مستقلة)',
+    'رمز QR الخاص بتأييد استمرارية الكفيل بالدوام (اختياري: يُرفق فقط إن وُجد، ويُطبع في صفحة مستقلة)'
+  ];
+  document.getElementById('infoRegBox').innerHTML = `
+    <p class="small">تُستكمل هذه الاستمارة من نافذة الاستعلامات (أو من حساب الطالب) بعد قبوله نهائياً في قسم محدد. محتواها مطابق تماماً لاستمارة التقديم، ويُضاف إليها في النهاية وعلى صفحة مستقلة معلومات الكفيل الضامن التالية:</p>
+    <table>${fields.map(f=>`<tr><td>${escapeHtml(f)}</td></tr>`).join('')}</table>`;
+}
+function loadInfoMails(){
+  const rows = [
+    ['تسجيل حساب طالب جديد','إرسال المعرف والرمز الخاصين بحساب الطالب فور التسجيل.'],
+    ['رمز تحقق (OTP)','رمز مكوّن من 6 أرقام صالح 10 دقائق لتسجيل الدخول بالبريد الإلكتروني بدون كلمة مرور.'],
+    ['تأكيد استلام الطلب','تأكيد استلام طلب التقديم مع كود الطلب فور الإرسال.'],
+    ['قبول التقديم (مرحلة أولى)','دعوة لمراجعة الكلية شخصياً لدفع أجور التقديم (25,000 د.ع) وجلب استمارة التقديم، دون تخصيص قسم بعد.'],
+    ['طلب استكمال النواقص','تحديد المستندات الناقصة المطلوب إحضارها للكلية شخصياً.'],
+    ['رفض التقديم','إشعار برفض الطلب مع بيان السبب.'],
+    ['قبول التسجيل (تخصيص قسم)','إشعار بالقبول النهائي بقسم محدد، مع متطلبات التسجيل (القسط 1,200,000 د.ع، كفيل، وثيقة دراسية أصلية).'],
+    ['إكمال التسجيل','تأكيد إتمام كل متطلبات التسجيل، مع موعد وموقع بدء المباشرة بالدوام.'],
+    ['تفعيل حساب مشرف','إرسال بيانات دخول المشرف (معرف ورمز) فور موافقة مسؤول النظام على طلب تسجيله (وليس عند التسجيل).'],
+    ['الرد على استفسار','رد مسؤول النظام على استفسار مُرسَل من نافذة الاستعلامات، ويتضمن نص الاستفسار الأصلي مع الإجابة عليه.']
+  ];
+  document.getElementById('infoMailsBox').innerHTML = `
+    <table><tr><th>الحالة</th><th>الرسالة</th></tr>
+    ${rows.map(([s,m])=>`<tr><td style="white-space:nowrap;font-weight:700">${escapeHtml(s)}</td><td>${escapeHtml(m)}</td></tr>`).join('')}</table>`;
+}
+function loadInfoExplain(){
+  document.getElementById('infoExplainBox').innerHTML = `
+    <h3 style="background:none;color:var(--primary-dark);padding:0;margin:14px 0 6px">مسار الطالب</h3>
+    <p class="small">تسجيل حساب (أو دخول لاحق بالمعرف والرمز، أو بالبريد ورمز تحقق) ← تعبئة استمارة التقديم بأربع خطوات مع رفع المستندات إلزامياً ← متابعة الحالة من نافذة الاستعلامات أو حساب الطالب ← عند القبول النهائي: استكمال بيانات الكفيل ← استلام رسالة إكمال التسجيل بموعد المباشرة.</p>
+    <h3 style="background:none;color:var(--primary-dark);padding:0;margin:14px 0 6px">مسار المشرف</h3>
+    <p class="small">تسجيل طلب مشرف جديد (بانتظار الموافقة) ← موافقة مسؤول النظام وإرسال بيانات الدخول ← دخول ومراجعة الطلبات (قبول تقديم / طلب استكمال / رفض / قبول تسجيل بتخصيص قسم / إكمال تسجيل) ← متابعة الإحصاءات وحالة كل طلب.</p>
+    <h3 style="background:none;color:var(--primary-dark);padding:0;margin:14px 0 6px">مسار الإدارة</h3>
+    <p class="small">الموافقة على طلبات المشرفين، ضبط ضوابط القبول لكل قسم (المعدل والفروع المقبولة)، ضبط تاريخ بدء العام الدراسي وموقع الأقسام، الرد على الاستفسارات، تصدير البيانات (Excel أو تصدير مجمّع لاستمارات PDF بصيغة ZIP)، ومتابعة إحصاءات استخدام النظام.</p>
+    <h3 style="background:none;color:var(--primary-dark);padding:0;margin:14px 0 6px">الأمان</h3>
+    <p class="small">جميع الرموز السرية مشفّرة ولا تُخزَّن كنص صريح، الجلسات موقّعة رقمياً ومحدودة المدة، روابط الملفات موقّعة ومؤقتة الصلاحية (لا مشاركة عامة دائمة)، وكل إجراء حساس يُسجَّل في سجل تدقيق (من نفّذه، متى، والتغيير الذي حدث).</p>`;
+}
+function saveTheme(){
+  const primary = val('themePrimary'), accent = val('themeAccent'), fontSize = val('themeFontSize');
+  document.documentElement.style.setProperty('--primary', primary);
+  document.documentElement.style.setProperty('--accent', accent);
+  document.body.style.fontSize = fontSize;
+  api('updateSettings',{settings:{primaryColor:primary, accentColor:accent, fontSize}});
+  toast('تم حفظ التنسيق','ok');
+}
+async function doChangeAdminCode(){
+  const newId = val('newAdminId'), newCode = val('newAdminCode');
+  if(!newId || !newCode){ showMsg('msgSecurity','الرجاء تعبئة الحقلين','err'); return; }
+  if(!confirm('سيتم استبدال بيانات دخول الإدارة الحالية بالكامل. هل أنت متأكد؟')) return;
+  const r = await api('changeAdminCode',{newId, newCode});
+  if(r.ok){
+    showMsg('msgSecurity', r.msg,'ok');
+    document.getElementById('newAdminId').value=''; document.getElementById('newAdminCode').value='';
+  } else showMsg('msgSecurity', r.error||'تعذر التغيير','err');
+}
+async function loadQueueStatus(){
+  const box = document.getElementById('qFailuresList');
+  const pbox = document.getElementById('qPendingList');
+  box.innerHTML = '<span class="spinner"></span>';
+  pbox.innerHTML = '<span class="spinner"></span>';
+  const r = await api('getQueueStatus',{});
+  if(!r.ok){ box.innerHTML = `<div class="msg err">${escapeHtml(r.error||'تعذر التحميل')}</div>`; return; }
+  document.getElementById('qPending').textContent = r.pending;
+  document.getElementById('qDone').textContent = r.done;
+  document.getElementById('qFailed').textContent = r.failed;
+  document.getElementById('qFailedDup').textContent = r.failedDup;
+  document.getElementById('qBatchSize').value = r.batchSize;
+  document.getElementById('qInterval').value = String(r.intervalMinutes);
+  document.getElementById('qAlertEmail').value = r.alertEmail || '';
+  if(!r.pendingItems || !r.pendingItems.length){
+    pbox.innerHTML = '<p class="small">لا توجد طلبات قيد الانتظار حالياً</p>';
+  } else {
+    pbox.innerHTML = r.pendingItems.map(p=>
+      `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div>
+          <div><b>${escapeHtml(p.code||'')}</b></div>
+          <div class="small">البريد: ${escapeHtml(p.email||'')} | وقت الاستلام: ${escapeHtml(p.time||'')}</div>
+        </div>
+        <button class="btn danger" style="flex-shrink:0" onclick="doCancelQueueItem('${escapeHtml(p.code||'').replace(/'/g,"\\'")}')">إلغاء</button>
+      </div>`
+    ).join('');
+  }
+  if(!r.recentFailures || !r.recentFailures.length){
+    box.innerHTML = '<p class="small">لا توجد حالات فشل حالياً 👍</p>';
+  } else {
+    box.innerHTML = r.recentFailures.map(f=>
+      `<div class="card" style="margin-bottom:8px">
+        <div><b>${escapeHtml(f.code||'')}</b> — ${escapeHtml(f.status||'')}</div>
+        <div class="small">البريد: ${escapeHtml(f.email||'')} | الوقت: ${escapeHtml(f.time||'')}</div>
+        ${f.note?`<div class="small">السبب: ${escapeHtml(f.note)}</div>`:''}
+      </div>`
+    ).join('');
+  }
+}
+async function doCancelQueueItem(code){
+  if(!confirm('سيتم حذف هذا الطلب نهائياً من الطابور قبل معالجته، ولا يمكن التراجع. متابعة؟')) return;
+  const r = await api('cancelQueueItem',{code});
+  if(r.ok){ toast('تم إلغاء الطلب','ok'); loadQueueStatus(); }
+  else toast(r.error||'تعذر الإلغاء','err');
+}
+async function saveQueueSettings(){
+  const batchSize = Number(val('qBatchSize'));
+  const intervalMinutes = Number(document.getElementById('qInterval').value);
+  const alertEmail = val('qAlertEmail');
+  if(!batchSize || batchSize<1 || batchSize>200){ showMsg('msgQueue','عدد الطلبات يجب أن يكون بين 1 و 200','err'); return; }
+  const r = await api('updateQueueSettings',{batchSize, intervalMinutes, alertEmail});
+  if(r.ok) showMsg('msgQueue', r.msg||'تم الحفظ','ok');
+  else showMsg('msgQueue', r.error||'تعذر الحفظ','err');
+}
+async function loadAdminStats(){
+  const r = await api('getSystemStats',{});
+  if(r.ok){
+    document.getElementById('statDaily').textContent = r.daily;
+    document.getElementById('statWeekly').textContent = r.weekly;
+    document.getElementById('statMonthly').textContent = r.monthly;
+    document.getElementById('statOnline').textContent = r.currentOnline;
+  }
+}
+async function saveConfig(){
+  const sheetUrl = val('cfgSheet'), driveUrl = val('cfgDrive'), scriptUrl = val('cfgScript');
+  if(scriptUrl) CONFIG.GAS_URL = scriptUrl;
+  const r = await api('updateConfig',{sheetUrl, driveUrl, scriptUrl});
+  toast(r.ok? 'تم الحفظ':(r.error||'تعذر الحفظ'), r.ok?'ok':'err');
+}
+async function doExport(){
+  const sheetName = val('exportSheet');
+  const box = document.getElementById('exportResult');
+  box.innerHTML = '<span class="spinner"></span>';
+  const r = await api('exportExcel',{sheetName});
+  box.innerHTML = r.ok? `<a class="btn accent dl" target="_blank" href="${r.url}">${DL_ICON}تنزيل الملف</a>` : `<div class="msg err">${escapeHtml(r.error)}</div>`;
+}
+async function doBulkExport(){
+  const status = val('bulkExportStatus');
+  const box = document.getElementById('bulkExportResult');
+  box.innerHTML = '<span class="spinner"></span> جارٍ التجميع، قد يستغرق دقيقة لعدد كبير من الطلبات...';
+  const r = await api('bulkExportPdfs',{status});
+  box.innerHTML = r.ok? `<a class="btn accent dl" target="_blank" href="${r.url}">${DL_ICON}تنزيل ملف ZIP (${r.count} استمارة)</a>` : `<div class="msg err">${escapeHtml(r.error)}</div>`;
+}
+async function doDelete(){
+  const sheetName = val('delSheet'), confirmTxt = val('delConfirm');
+  if(confirmTxt!=='DELETE'){ toast('يرجى كتابة DELETE للتأكيد','err'); return; }
+  if(!confirm('هل أنت متأكد من حذف كل بيانات '+sheetName+' نهائياً؟')) return;
+  const r = await api('deleteData',{sheetName, confirm:confirmTxt});
+  toast(r.ok? 'تم الحذف':(r.error||'تعذر الحذف'), r.ok?'ok':'err');
+}
+
+/* ============================= استرجاع الجلسة المحفوظة عند إعادة التحميل ============================= */
+(function initTheme(){
+  const cached = localStorage.getItem('themeSettings');
+  if(cached){
+    try{
+      const t = JSON.parse(cached);
+      if(t.primaryColor) document.documentElement.style.setProperty('--primary', t.primaryColor);
+      if(t.accentColor) document.documentElement.style.setProperty('--accent', t.accentColor);
+      if(t.fontSize) document.body.style.fontSize = t.fontSize;
+    }catch(e){}
+  }
+})();
+</script>
+</body>
+</html>
